@@ -1,4 +1,6 @@
 # Part 2: GROUP BY
+# NOTE: You don't need to start a sqlite session, just return the correct
+# SQL query as a string
 
 
 def freq_risk_per_violation():

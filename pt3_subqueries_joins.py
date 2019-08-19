@@ -1,4 +1,6 @@
 # Part 3: Subqueries & Joins
+# NOTE: You don't need to start a sqlite session, just return the correct
+# SQL query as a string
 
 
 def top_postcodes_for_chain_stores():

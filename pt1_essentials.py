@@ -1,4 +1,6 @@
 # Part 1: Essentials
+# NOTE: You don't need to start a sqlite session, just return the correct
+# SQL query as a string
 
 
 def business_ids_count():
@@ -36,7 +38,7 @@ def first_and_last_investigation():
 
 def business_local_owner_count():
     """
-    How many businesses are there in San Francisco where their owners live
+    How many businesses are there where their owners live
     in the same area (postal code/ zip code) as the business is located?
     :return: a string representing the SQL query
     :rtype: str
