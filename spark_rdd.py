@@ -103,7 +103,8 @@ def get_score_per_hour(dataset):
 def get_proportion_of_scores(dataset):
     """
     It may be more useful to look at sucessful posts that get over 200 points.
-    Find the proportion of posts that get above 200 points per hour.
+    Find the proportion of posts that get above 200 points per hour. 
+    This will be the number of posts with points > 200 divided by the total number of posts at this hour.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of scores over 200 per hour
