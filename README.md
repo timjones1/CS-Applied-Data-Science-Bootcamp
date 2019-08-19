@@ -37,4 +37,4 @@ Since the dataset is quite big, it will not be tracked by the system (see the `.
 
 You will need to implement the class `KickstarterModel` in `model.py` and use the `run.py` to train your model and save its state to a file.
 
-Check the Machine Learning help page on K.A.T.E. for more details on how to do so.
+Check the Machine Learning help page on KATE for more details on how to do so.
