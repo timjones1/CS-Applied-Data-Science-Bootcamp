@@ -1,14 +1,27 @@
-# Instructions
+# Prediction of Risk Profile for Insurance Company
 
-This is a (modified) dataset taken from Kaggle. The aim is to determine people's risk profile (from 1 to 8) for an insurance company (Prudential) based on a number of features.
-Given a test set, you should produce a prediction of the classes and it is the overall accuracy which will be retained for comparison.
+This is a (modified) dataset taken from Kaggle, the machine learning . The aim is to determine people's risk profile (from 1 to 8) for an insurance company based on a number of features.
+
+Although risk profile is ordered, we consider this problem as being a classification problem and the overall accuracy will be used for evaluating your model.
 
 **Notes**:
 
 - this dataset has been thoroughly anonymized, which makes it extra challenging.
-- this is a dataset with low signal, do not expect results well above 60% accuracy.
+- this is a dataset with low signal, and a 8-classes classification problem,  hence accuracy can be quite low.
 
-## Attributes
+## Get the data
+
+We provide a file, `run.py` that you can use to manage the project. To download the data in the right place; in a terminal run:
+
+```python
+python run.py setup
+```
+from within the repository.
+
+This will download three files:
+* `X_train.zip`: the training set as a csv file. Note that the file is zipped but NO NEED TO UNZIP it, you can simply call `pd.read_csv("data/X_train.zip")` to open it, saving space on disk. 
+
+It contains the following features:
 
 **Variable - Description**
 - Id - A unique identifier associated with an application.
@@ -40,3 +53,44 @@ Product_Info_4, Ins_Age, Ht, Wt, BMI, Employment_Info_1, Employment_Info_4, Empl
 Medical_History_1, Medical_History_10, Medical_History_15, Medical_History_24, Medical_History_32
 Medical_Keyword_1-48 are dummy variables.
 ```
+
+* `y_train.zip`: the target for our training set, corresponds to all the classes we are trying to predict. 
+
+* `X_test.zip`: A sample test dataframe to test your model locally.
+
+
+## Get Started
+
+You will need to implement the function `build_model` in `model.py` and use the `run.py` to train your model and save its state to a file.
+
+Check the Machine Learning help page on KATE for more details on how to do so.
+
+
+## Baseline Model
+
+```
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import Pipeline
+from sklearn.tree import DecisionTreeClassifier
+
+
+class Processor(BaseEstimator, TransformerMixin):
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        cols = ["Product_Info_4"]
+
+        if y is None:
+            return X[cols]
+
+        return X[cols], y
+
+
+def build_model():
+    preprocessor = Processor()
+    model = DecisionTreeClassifier()
+    return Pipeline([("preprocessor", preprocessor), ("model", model)])
+```
+
+Good luck!

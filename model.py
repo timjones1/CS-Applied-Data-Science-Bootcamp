@@ -1,21 +1,13 @@
-class InsuranceModel:
+def build_model():
+    """This function builds a new model and returns it.
 
-    def __init__(self):
+    The model should be implemented as a sklearn Pipeline object.
 
-        self.model = None
+    Your pipeline needs to have two steps:
+    - preprocessor: a Transformer object that can transform a dataset
+    - model: a predictive model object that can be trained and generate predictions
 
-    def preprocess_training_data(self, df):
+    :return: a new instance of your model
+    """
 
-        raise NotImplementedError
-
-    def fit(self, X, y):
-
-        raise NotImplementedError
-
-    def preprocess_unseen_data(self, df):
-
-        raise NotImplementedError
-
-    def predict(self, X):
-
-        raise NotImplementedError
+    raise NotImplementedError
