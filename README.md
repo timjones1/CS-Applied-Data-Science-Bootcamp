@@ -1,13 +1,15 @@
 # Prediction of Risk Profile for Insurance Company
 
-This is a (modified) dataset taken from Kaggle, the machine learning . The aim is to determine people's risk profile (from 1 to 8) for an insurance company based on a number of features.
+This dataset was published by an insurance company and contains anonymised information about their clients.
+
+The aim is to determine people's risk profile (from 1 to 8) based on their features.
 
 Although risk profile is ordered, we consider this problem as being a classification problem and the overall accuracy will be used for evaluating your model.
 
 **Notes**:
 
 - this dataset has been thoroughly anonymized, which makes it extra challenging.
-- this is a dataset with low signal, and a 8-classes classification problem,  hence accuracy can be quite low.
+- this is a dataset with low signal, and a 8-classes classification problem, hence accuracy can be quite low.
 
 ## Get the data
 
