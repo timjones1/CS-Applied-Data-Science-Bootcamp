@@ -1,32 +1,15 @@
 import argparse
 import os
 import pickle
-import urllib.request
-
 import pandas as pd
-
 from model import build_model
 
-DATASET_URL = "https://s3-eu-west-1.amazonaws.com/kate-datasets/prudential/"
 X_TRAIN_NAME = "X_train.zip"
 Y_TRAIN_NAME = "y_train.zip"
 X_TEST_NAME = "X_test.zip"
 
 DATA_DIR = "data"
 PICKLE_NAME = "model.pickle"
-
-
-def setup_data():
-    if not os.path.isdir(DATA_DIR):
-        os.makedirs(DATA_DIR)
-
-    for filename in [X_TRAIN_NAME, Y_TRAIN_NAME, X_TEST_NAME]:
-        print("Downloading {}...".format(filename))
-        req = urllib.request.urlopen(DATASET_URL + filename)
-        data = req.read()
-
-        with open(os.path.join(DATA_DIR, filename), "wb") as f:
-            f.write(data)
 
 
 def train_model():
@@ -67,11 +50,7 @@ def main():
 
     stage = parser.parse_args().stage
 
-    if stage == "setup":
-        setup_data()
-        print("\nSetup was successful!")
-
-    elif stage == "train":
+    if stage == "train":
         print("Training model...")
         train_model()
 
