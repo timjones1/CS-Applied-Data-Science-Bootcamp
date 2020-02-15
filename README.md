@@ -1,2 +1,2 @@
 # ads01
-Cambridge Spark
+This is the Github repository for class Cambridge Spark ADS01
