@@ -1,12 +1,15 @@
 import argparse
 import os
 import pickle
+import urllib.request
+
 import pandas as pd
+
 from model import build_model
 
-X_TRAIN_NAME = "X_train.zip"
-Y_TRAIN_NAME = "y_train.zip"
-X_TEST_NAME = "X_test.zip"
+X_TRAIN_NAME = "X_train.csv"
+Y_TRAIN_NAME = "y_train.csv"
+X_TEST_NAME = "X_test.csv"
 
 DATA_DIR = "data"
 PICKLE_NAME = "model.pickle"
@@ -44,7 +47,7 @@ def main():
         "stage",
         metavar="stage",
         type=str,
-        choices=["setup", "train", "test"],
+        choices=["train", "test"],
         help="Stage to run.",
     )
 
