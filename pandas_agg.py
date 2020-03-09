@@ -43,34 +43,24 @@ def get_prices_for_heaviest_item(inventory):
     # return blank pd.series if inventory is an empty dataframe
     if inventory.empty:
         return pd.Series()
-
     # slice inventory to get only stocked items
     stock_inv = inventory[inventory['in_stock']]
-    # create groupby object from subest of items in stock
-    df_group = stock_inv.groupby(['category'])
+    # create groupby object from items in stock and get max weights
+    max_weights = stock_inv.groupby(['category']).max()["weight"]
     # save total nr and max weights for each group and extract price
-    max_weights = df_group.max()["weight"]
     nr_weights = len(max_weights)
     # if not all categories have an item in stocl return empty pd.series
     if nr_weights == 0:
         return pd.Series()
     # retrieve max weights and associated prices
-    max_weight_prices = [[
-        max_weights.index[w],
+    max_weight_prices = [
         stock_inv.loc[(stock_inv["category"] == max_weights.index[w])
                       & (stock_inv["weight"] == max_weights[w]),
-                      "price"].iloc[0]]
-            for w in range(len(max_weights))
-        ]
-    # put results into a dataframe
-    df_ret = pd.DataFrame(max_weight_prices, columns=["cat", "price"])
-    df_ret.set_index("cat", drop=True, inplace=True)
-    # sort by price
-    df_ret.sort_values(by="price", ascending=False, inplace=True)
-    # remove name from index
-    df_ret = df_ret.rename_axis(None)
-    # remove series column name and return
-    return df_ret["price"].rename()
+                      "price"].iloc[0] for w in range(len(max_weights))]
+
+    ret = pd.Series(max_weight_prices, index=max_weights.index)
+    ret.sort_values(ascending=False, inplace=True)
+    return ret.rename_axis(None)
 
 
 def reshape_temperature_data(measurements):
@@ -113,18 +103,20 @@ def reshape_temperature_data(measurements):
 
 
     :param measurements: pandas.DataFrame with seven columns:
-    "location", 'Jan-2018', 'Feb-2018', 'Mar-2018', "April-2018", "May-2018",
+    "location", 'Jan-2018','Feb-2018', 'Mar-2018', "April-2018", "May-2018",
     "June-2018"
     :return: a pandas.DataFrame containing three columns "location", "date",
     "value" with a row for each temperature measurement in a given location.
     There should be no missing values.
     """
 
+    # define dataframe to return
     reshape_df = pd.DataFrame({'location': pd.Series([], dtype='float64'),
                                'date': pd.Series([], dtype='object'),
                                'value': pd.Series([], dtype='int')})
     nr_mes = measurements.shape[0]
 
+    # iterate over rows&cols creating new rows in reshape_df for each col
     for i in range(nr_mes):
         for cols in measurements.columns[1:]:
             reshape_df = reshape_df.append(
@@ -186,8 +178,8 @@ def compute_events_matrix_count(events):
 
     # create return dataframe
     ret_df = pd.DataFrame({'user_id': ids})
-    for ev in event_types:
-        ret_df[ev] = np.zeros(len(ids))
+    for ev_t in event_types:
+        ret_df[ev_t] = np.zeros(len(ids))
     ret_df.set_index("user_id", inplace=True)
 
     # create summarized groupby object by user_id & event
