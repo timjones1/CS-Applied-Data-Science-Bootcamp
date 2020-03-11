@@ -1,4 +1,6 @@
 """This exercise contains functions where you need to use pandas to build new columns from existing ones."""
+import json
+import pandas as pd
 
 
 def diff_in_days(df):
@@ -35,8 +37,13 @@ def diff_in_days(df):
     :param df: DataFrame with the two columns of timestamps
     :return: new dataframe with differences in days between timestamps
     """
-
-    raise NotImplementedError
+    diff_days = []
+    for row in range(len(df)):
+        diff_days += [pd.Timedelta(df.loc[row, ['time_1', 'time_2']].max()
+                                   - df.loc[row, ['time_1', 'time_2']].min(),
+                                   unit='s').days]
+    res = pd.DataFrame({'difference_days': diff_days})
+    return res
 
 
 def return_location(df):
@@ -70,8 +77,13 @@ def return_location(df):
     :param df: DataFrame with the locations column
     :return: new DataFrame with the short_name column
     """
-
-    raise NotImplementedError
+    df_short_name = pd.DataFrame()
+    for location in df['locations']:
+        df_location = pd.DataFrame([json.loads(location)])
+        df_short_name = df_short_name.append(df_location['short_name'],
+                                             ignore_index=True)
+    df_short_name.columns = ['short_name']
+    return df_short_name
 
 
 def return_post_codes(df):
@@ -111,7 +123,12 @@ def return_post_codes(df):
     :param df: a DataFrame with the text column
     :return: new DataFrame with the postcodes column
     """
-
-    raise NotImplementedError
-
-
+    regex = r'([A-Z]{1,2}\d{1,2}([A-Z]{1})?\s{0,}\d{1}[A-Z]{2})'
+    df_postcodes = df['text'].str.extractall(regex)
+    df_postcodes = df_postcodes.dropna(axis=1)
+    res = pd.DataFrame()
+    for row_index in range(len(df)):
+        val = df_postcodes.loc[row_index].astype(str).apply(' | '.join, axis=0)
+        res = res.append(val, ignore_index=True)
+    res.columns = ['postcodes']
+    return res
