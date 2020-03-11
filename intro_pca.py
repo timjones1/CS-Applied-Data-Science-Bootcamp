@@ -4,6 +4,29 @@ All of them take at least a dataframe df as argument. To test your functions
 locally, we recommend using the wine dataset that you can load from sklearn by
 importing sklearn.datasets.load_wine"""
 
+import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+# from sklearn.datasets import load_wine
+
+# wine_data = load_wine()
+# train_data = np.array(wine_data.data)
+# train_labels = np.array(wine_data.target)
+# df = pd.DataFrame(data=np.c_[train_data, train_labels], columns=wine_data.feature_names + ['category'])
+
+# helper function to generate pca, scaler and normalized dataframe:
+
+
+def get_pca(data, pc_tokeep, scale=True):
+    scaler = None
+    if scale:
+        scaler = StandardScaler(with_mean=True, with_std=True)
+        data = pd.DataFrame(scaler.fit_transform(data.values))
+    pca = PCA(pc_tokeep)
+    pca.fit_transform(data)
+    return pca, scaler, data
+
 
 def get_cumulated_variance(df, scale):
     """Apply PCA on a DataFrame and return a new DataFrame containing
@@ -25,8 +48,9 @@ def get_cumulated_variance(df, scale):
     :param scale: boolean, whether to scale or not
     :return: a new DataFrame with cumulated variance in percent
     """
-
-    raise NotImplementedError
+    pca, _, _ = get_pca(df, df.shape[1], scale=scale)
+    cum_var = np.cumsum(pca.explained_variance_ratio_*100)
+    return pd.DataFrame(cum_var, index=['PC'+str(i+1) for i in range(df.shape[1])]).T
 
 
 def get_coordinates_of_first_two(df, scale):
@@ -57,8 +81,9 @@ def get_coordinates_of_first_two(df, scale):
     :param scale: boolean, whether to scale or not
     :return: a new DataFrame with coordinates of PC1 and PC2
     """
-
-    raise NotImplementedError
+    col_list = list(df.columns)
+    pca, _, _ = get_pca(df, 2, scale=scale)
+    return pd.DataFrame(pca.components_, columns=col_list, index=['PC'+str(i+1) for i in range(2)])
 
 
 def get_most_important_two(df, scale):
@@ -91,16 +116,20 @@ def get_most_important_two(df, scale):
     :param scale: boolean, whether to scale or not
     :return: names of the two most important features as a tuple
     """
-
-    raise NotImplementedError
+    col_list = list(df.columns)
+    pca, _, _ = get_pca(df, 1, scale=scale)
+    pc1_frame = pd.DataFrame(pca.components_, columns=col_list, index=['PC'+str(i+1) for i in range(1)]).abs()
+    print(pc1_frame)
+    top2 = pc1_frame.T.nlargest(2, columns='PC1')
+    return tuple(top2.index)
 
 
 def distance_in_n_dimensions(df, point_a, point_b, n, scale):
     """Write a function that applies PCA on a given DataFrame df in order to find
     a new subspace of dimension n.
 
-    Transform the two points point_a and point_b to be represented into that 
-    n dimensions space, compute the Euclidean distance between the points in 
+    Transform the two points point_a and point_b to be represented into that
+    n dimensions space, compute the Euclidean distance between the points in
     that space and return it.
 
     Example:
@@ -137,15 +166,17 @@ def distance_in_n_dimensions(df, point_a, point_b, n, scale):
     :param scale: whether to scale data or not
     :return: distance between points in the subspace
     """
-
-    raise NotImplementedError
+    pca, scaler, _ = get_pca(df, n, scale=scale)
+    if scale:
+        point_a, point_b = scaler.transform([point_a, point_b])
+    return np.linalg.norm(pca.transform([point_a]) - pca.transform([point_b]))
 
 
 def find_outliers_pca(df, n, scale):
     """Apply PCA on a given DataFrame df and transofmr all the data to be expressed
     on the first principal component (you can discard other components)
 
-    With all those points in a one-dimension space, find outliers by looking for points 
+    With all those points in a one-dimension space, find outliers by looking for points
     that lie at more than n standard deviations from the mean.
 
     You should return a new dataframe containing all the rows of the original dataset
@@ -185,7 +216,9 @@ def find_outliers_pca(df, n, scale):
     :param scale: whether to scale data or not
     :return: pandas DataFrame containing outliers only
     """
-
-    raise NotImplementedError
-
-
+    pca, _, scaled_df = get_pca(df, 1, scale=scale)
+    result_pc1 = pca.transform(scaled_df)
+    pc_mean = np.mean(result_pc1)
+    pc_stdev = np.std(result_pc1)
+    final = (result_pc1 - pc_mean)/pc_stdev
+    return df[(final > n) | (final < -n)]
