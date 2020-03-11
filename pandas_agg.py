@@ -48,22 +48,17 @@ def get_prices_for_heaviest_item(inventory):
     # create groupby object from items in stock and get max weights
     max_weights = stock_inv.groupby(['category']).max()["weight"]
     
-    """
-    I think steps below are not needed, as the prompt is to erturn an empty Series
-    if there ar eno items in stock and not whether each category has at least one item in stock.
-    Your if statement at the beginning will do the trick!
-    
-    # save total nr and max weights for each group and extract price
+    """ redundant code, outside of spec removed as Paulo comments on github
     nr_weights = len(max_weights)
     # if not all categories have an item in stocl return empty pd.series
     if nr_weights == 0:
         return pd.Series()
     """
-        
+
     # retrieve max weights and associated prices
     max_weight_prices = [
-        stock_inv.loc[(stock_inv["category"] == max_weights.index[w]) # Is this 1st IF really needed, since the category will be the index of the max_weights anyway?
-                      & (stock_inv["weight"] == max_weights[w]),
+        stock_inv.loc[# (stock_inv["category"] == max_weights.index[w]) & # Is this 1st IF really needed, since the category will be the index of the max_weights anyway?
+                      (stock_inv["weight"] == max_weights[w]),
                       "price"].iloc[0] for w in range(len(max_weights))]
 
     ret = pd.Series(max_weight_prices, index=max_weights.index)
