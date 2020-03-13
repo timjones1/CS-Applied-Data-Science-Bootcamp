@@ -16,7 +16,6 @@ def get_prices_for_heaviest_item(inventory):
     
 
 
-
 def reshape_temperature_data(measurements):
 
     df = pd.DataFrame(columns = ['location', 'date', 'value'])
@@ -29,8 +28,6 @@ def reshape_temperature_data(measurements):
     df.sort_values(['location', 'value'], ascending = (True, True), inplace = True)
     df = df.reset_index(drop = True)
     return df
-
-
 
 
 
@@ -57,15 +54,3 @@ def compute_events_matrix_count(events):
         df = df.reindex(sorted(df.columns), axis=1)
 
         return df
-
-
-    #for i in range(events.shape[0]):
-        #if events.iloc[i, 1] == 'click':
-            #df = df.append(pd.Series([events.iloc[i, 0], 1., 0., 0], index = df.columns), ignore_index= True)
-        #elif events.iloc[i, 1] == 'pause':
-            #df = df.append(pd.Series([events.iloc[i, 0], 0., 1., 0], index = df.columns), ignore_index= True)
-        #elif events.iloc[i, 1] == 'play':
-            #df = df.append(pd.Series([events.iloc[i, 0], 0., 0., 1], index = df.columns), ignore_index= True)
-        
-    #df = df.groupby('user_id').sum()
-    #del df.index.name

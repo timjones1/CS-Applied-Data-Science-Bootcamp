@@ -34,26 +34,6 @@ def moving_averages(x, k):
 
 
 def block_matrix(A, B):
-    """
-    Given two numpy matrices A and B of arbitrary dimensions,
-    return a new numpy matrix of the following form:
-        [A,0]
-        [0,B]
-
-    Example inputs:
-        A = [1,2]    B = [5,6]
-            [3,4]        [7,8]
-
-    Expected output:
-        [1,2,0,0]
-        [3,4,0,0]
-        [0,0,5,6]
-        [0,0,7,8]
-
-    :param A: numpy array
-    :param B: numpy array
-    :returns: a numpy array with A and B on the diagonal.
-    """
 
     new_A = np.append(A, np.zeros((len(A), len(B[0]))), axis = 1)
     new_B = np.append(np.zeros((len(B), len(A[0]))), B, axis = 1)
