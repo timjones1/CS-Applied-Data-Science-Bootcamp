@@ -1,0 +1,84 @@
+import numpy as np
+def nan_processor(df, replacement_str):
+    """
+    Take a DataFrame and return one where all occurrences
+    of the replacement string have been replaced by `np.nan`
+    and, subsequently, all rows containing np.nan
+    have been removed.
+
+    Example with replacement_str='blah'
+         A       B      C                   A     B    C
+    --------------------------         ------------------
+    0 |  0.5 |  0.3   | 'blah'         1 | 0.2 | 0.1 | 5
+    1 |  0.2 |  0.1   |   5     -->    3 | 0.7 | 0.2 | 1
+    2 |  0.1 | 'blah' |   3
+    3 |  0.7 |  0.2   |   1
+
+    Note: keep the original index (not reset)
+
+    :param df: Input data frame (pandas.DataFrame)
+    :param replacement_str: string to find and replace by np.nan
+    :returns: DataFrame where the occurences of replacement_str have been
+        replaced by np.nan ands subsequently all rows containing np.nan have
+        been removed
+    """
+
+    df = df.replace(replacement_str, np.nan)
+    df = df.dropna()
+    return df
+
+
+
+
+
+def feature_cleaner(df, low, high):
+    """
+    Take a dataframe where columns are all numerical and non-constant.
+    For each feature, mark the values that are not between the given
+    percentiles (low-high) as np.nan. If a value is exactly on the high or low
+    percentile, it should be marked as nan too.
+
+    Then, remove all rows containing np.nan.
+    Finally, the columns must be scaled to have zero mean and unit variance
+    (do this without sklearn).
+
+    Example testdf:
+            0     1     2
+    ---------------------
+    A |   0.1   0.2   0.1
+    B |   5.0  10.0  20.0
+    C |   0.2   0.3   0.5
+    D |   0.3   0.2   0.7
+    E |  -0.1  -0.2  -0.4
+    F |   0.1   0.4   0.3
+    G |  -0.5   0.3  -0.2
+    H | -10.0   0.3   1.0
+
+    Output of feature_cleaner(testdf, 0.01, 0.99):
+
+                0         1         2
+    ---------------------------------
+    A |  0.191663 -0.956183 -0.515339
+    C |  0.511101  0.239046  0.629858
+    D |  0.830540 -0.956183  1.202457
+    F |  0.191663  1.434274  0.057260
+    G | -1.724967  0.239046 -1.374236
+
+    :param df:      Input DataFrame (with numerical columns)
+    :param low:     Lowest percentile  (0.0<low<1.0)
+    :param high:    Highest percentile (low<high<1.0)
+    :returns:       Scaled DataFrame where elements that are outside of the
+                    desired percentile range have been removed
+    """
+
+    for col in df.columns:
+        df[col] = df[col].apply(lambda x: np.nan if x <= df[col].quantile(low) or x >= df[col].quantile(high) else x)
+    df = df.dropna()
+
+    df_mean = df.mean()
+    df_std = df.std()
+
+    df = df - df_mean
+    df = df / df_std
+
+    return df
