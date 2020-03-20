@@ -1,3 +1,9 @@
+import pandas as pd
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.naive_bayes import MultinomialNB
+
 def preprocess(df):
     """This function takes a dataframe and preprocesses it so it is
     ready for the training stage.
