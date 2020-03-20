@@ -25,7 +25,28 @@ def preprocess(df):
     :return: X, y, X_eval
     """
 
-    raise NotImplementedError
+    msk_eval = df.evaluation_set
+
+    df = df[["blurb", "state"]]
+    df.blurb.fillna("",inplace=True)
+    X_train = df[~msk_eval].drop(["state"], axis=1)
+    y_train = df[~msk_eval]["state"]
+    X_test = df[msk_eval].drop(["state"], axis=1)
+    #create Countvectorizer object and create a vector of word counts
+    count_vect = CountVectorizer()
+    X_train_counts = count_vect.fit_transform(X_train.blurb)
+    #create Tf/idf transformer and transform train set
+    tf_transformer = TfidfTransformer()
+    X_train_tf = tf_transformer.fit_transform(X_train_counts)
+    # transform test set
+    X_test_counts = count_vect.transform(X_test.blurb)
+    X_test_tf = tf_transformer.transform(X_test_counts)
+    
+    X = X_train_tf
+    y = y_train
+    X_eval = X_test_tf
+    
+    return X, y, X_eval
 
 
 def train(X, y):
@@ -38,7 +59,9 @@ def train(X, y):
     :return: a trained model
     """
 
-    raise NotImplementedError
+    model = MultinomialNB()
+    model.fit(X, y)
+    return model
 
 
 def predict(model, X_test):
@@ -58,4 +81,5 @@ def predict(model, X_test):
     :return: y_pred, your predictions
     """
 
-    raise NotImplementedError
+    y_pred = model.predict(X_test)
+    return y_pred
