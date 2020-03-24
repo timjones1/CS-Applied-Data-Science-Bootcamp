@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 
+
 def preprocess(df):
     """This function takes a dataframe and preprocesses it so it is
     ready for the training stage.
@@ -34,24 +35,21 @@ def preprocess(df):
     msk_eval = df.evaluation_set
 
     df = df[["blurb", "state"]]
-    df.blurb.fillna("",inplace=True)
+    df.blurb.fillna("", inplace=True)
     X_train = df[~msk_eval].drop(["state"], axis=1)
-    y_train = df[~msk_eval]["state"]
+    y = df[~msk_eval]["state"]
     X_test = df[msk_eval].drop(["state"], axis=1)
-    #create Countvectorizer object and create a vector of word counts
+    
+    # create Countvectorizer object and create a vector of word counts
     count_vect = CountVectorizer()
     X_train_counts = count_vect.fit_transform(X_train.blurb)
-    #create Tf/idf transformer and transform train set
+    
+    # create Tf/idf transformer and transform train set
     tf_transformer = TfidfTransformer()
-    X_train_tf = tf_transformer.fit_transform(X_train_counts)
+    X = tf_transformer.fit_transform(X_train_counts)
     # transform test set
     X_test_counts = count_vect.transform(X_test.blurb)
-    X_test_tf = tf_transformer.transform(X_test_counts)
-    
-    X = X_train_tf
-    y = y_train
-    X_eval = X_test_tf
-    
+    X_eval = tf_transformer.transform(X_test_counts)
     return X, y, X_eval
 
 
@@ -71,7 +69,7 @@ def train(X, y):
 
 
 def predict(model, X_test):
-    """This functions takes your trained model as well 
+    """This functions takes your trained model as well
     as a processed test dataset and returns predictions.
 
     On KATE, the processed test dataset will be the X_eval you built
@@ -79,8 +77,8 @@ def predict(model, X_test):
     you can try to generate predictions using a sample test set of your
     choice.
 
-    This should return your predictions either as a pd.DataFrame with one column
-    or a pd.Series
+    This should return your predictions either as a pd.DataFrame with one 
+    column or a pd.Series
 
     :param model: your trained model
     :param X_test: a processed test set (on KATE it will be X_eval)
