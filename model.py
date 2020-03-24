@@ -1,5 +1,3 @@
-import pandas as pd
-import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
@@ -12,8 +10,8 @@ def preprocess(df):
     The DataFrame contains columns used for training (features)
     as well as the target column.
 
-    It also contains some rows for which the target column is unknown. 
-    Those are the observations you will need to predict for KATE 
+    It also contains some rows for which the target column is unknown.
+    Those are the observations you will need to predict for KATE
     to evaluate the performance of your model.
 
     Here you will need to return the training set: X and y together
@@ -36,20 +34,20 @@ def preprocess(df):
 
     df = df[["blurb", "state"]]
     df.blurb.fillna("", inplace=True)
-    X_train = df[~msk_eval].drop(["state"], axis=1)
+    x_train = df[~msk_eval].drop(["state"], axis=1)
     y = df[~msk_eval]["state"]
-    X_test = df[msk_eval].drop(["state"], axis=1)
-    
+    x_test = df[msk_eval].drop(["state"], axis=1)
+
     # create Countvectorizer object and create a vector of word counts
     count_vect = CountVectorizer()
-    X_train_counts = count_vect.fit_transform(X_train.blurb)
-    
+    x_train_counts = count_vect.fit_transform(x_train.blurb)
+
     # create Tf/idf transformer and transform train set
     tf_transformer = TfidfTransformer()
-    X = tf_transformer.fit_transform(X_train_counts)
+    X = tf_transformer.fit_transform(x_train_counts)
     # transform test set
-    X_test_counts = count_vect.transform(X_test.blurb)
-    X_eval = tf_transformer.transform(X_test_counts)
+    x_test_counts = count_vect.transform(x_test.blurb)
+    X_eval = tf_transformer.transform(x_test_counts)
     return X, y, X_eval
 
 
@@ -77,7 +75,7 @@ def predict(model, X_test):
     you can try to generate predictions using a sample test set of your
     choice.
 
-    This should return your predictions either as a pd.DataFrame with one 
+    This should return your predictions either as a pd.DataFrame with one
     column or a pd.Series
 
     :param model: your trained model
