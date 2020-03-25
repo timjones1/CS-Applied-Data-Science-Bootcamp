@@ -1,22 +1,15 @@
 # imports
+import json
 import pandas as pd
 import numpy as np
-import json
-import matplotlib.pyplot as plt
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-# from sklearn.naive_bayes import MultinomialNB
-from sklearn.model_selection import train_test_split
-
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-# from sklearn.svm import LinearSVC
-from sklearn.metrics import classification_report
 from sklearn.linear_model import SGDClassifier
-# from sklearn.model_selection import GridSearchCV
 
 
 def preprocess(data):
@@ -153,14 +146,14 @@ def train(X, y):
     model = Pipeline(
         steps=[('preprocessor', preprocessor),
                ('sgd', SGDClassifier(
-                alpha=6e-05, average=False, class_weight=None,
-                early_stopping=False, epsilon=0.1, eta0=0.0,
-                fit_intercept=True, l1_ratio=0.15,
-                learning_rate='optimal', loss='hinge',
-                max_iter=180, n_iter_no_change=5, n_jobs=None,
-                penalty='l2', power_t=0.5, random_state=None,
-                shuffle=True, tol=0.001, validation_fraction=0.1,
-                verbose=0, warm_start=False))])
+                   alpha=6e-05, average=False, class_weight=None,
+                   early_stopping=False, epsilon=0.1, eta0=0.0,
+                   fit_intercept=True, l1_ratio=0.15,
+                   learning_rate='optimal', loss='hinge',
+                   max_iter=180, n_iter_no_change=5, n_jobs=None,
+                   penalty='l2', power_t=0.5, random_state=None,
+                   shuffle=True, tol=0.001, validation_fraction=0.1,
+                   verbose=0, warm_start=False))])
     model.fit(X, y)
     return model
 
