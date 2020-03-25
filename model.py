@@ -1,9 +1,25 @@
+#imports
+import pandas as pd
+import numpy as np
+import json
+import matplotlib.pyplot as plt
+
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.naive_bayes import MultinomialNB
+# from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+# from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report
+from sklearn.linear_model import SGDClassifier
+from sklearn.model_selection import GridSearchCV
 
 
-def preprocess(df):
+def preprocess(data):
     """This function takes a dataframe and preprocesses it so it is
     ready for the training stage.
 
@@ -29,25 +45,54 @@ def preprocess(df):
     :type df: pd.DataFrame
     :return: X, y, X_eval
     """
+    data = raw_data[~raw_data.state.isnull()]
+    data.blurb.fillna("missing",inplace=True)
+    data.name.fillna("missing",inplace=True)
 
-    msk_eval = df.evaluation_set
+    cat_get_slug = lambda x : json.loads(x).get('slug')
+    data['cat_slug'] = raw_data['category'].apply(cat_get_slug)
 
-    df = df[["blurb", "state"]]
-    df.blurb.fillna("", inplace=True)
-    x_train = df[~msk_eval].drop(["state"], axis=1)
-    y = df[~msk_eval]["state"]
-    x_test = df[msk_eval].drop(["state"], axis=1)
+    cat_get_parent = lambda x : json.loads(x).get('parent_id')
+    data['cat_parent'] = data['category'].apply(cat_get_parent)
+    data['goal'] = np.log((data.goal*data.static_usd_rate)+1)
+    categorical_cols = ['cat_slug','country']
 
-    # create Countvectorizer object and create a vector of word counts
-    count_vect = CountVectorizer()
-    x_train_counts = count_vect.fit_transform(x_train.blurb)
+    data['blurb_length'] = data['blurb'].apply(len)
+    data['name_length'] = data['name'].apply(len)
 
-    # create Tf/idf transformer and transform train set
-    tf_transformer = TfidfTransformer()
-    X = tf_transformer.fit_transform(x_train_counts)
-    # transform test set
-    x_test_counts = count_vect.transform(x_test.blurb)
-    X_eval = tf_transformer.transform(x_test_counts)
+    #convert time dependent fields into datetime and add extra fields day,month,year
+    from datetime import datetime
+    utc_time = lambda ts:datetime.utcfromtimestamp(ts)
+
+    for col in ["launched_at","deadline",'created_at']:
+        data[col] = raw_data[col].apply(utc_time)
+        data[f'{col}_day'] = pd.DatetimeIndex(data[col]).day
+        data[f'{col}_month'] = pd.DatetimeIndex(data[col]).month
+        data[f'{col}_year'] = pd.DatetimeIndex(data[col]).year
+
+    # extract location info
+    data['loc_state'] = data['location'].apply(
+        lambda x: json.loads(x).get('state') if (np.all(pd.notnull(x))) else "Other")
+    data['loc_name'] = data['location'].apply(
+        lambda x: json.loads(x).get('name') if (np.all(pd.notnull(x))) else "Other")
+    # get only states with > 5 examples and names > 50 examples
+    top_names = data['loc_name'].value_counts()[data['loc_name'].value_counts()>10]
+    top_states = data['loc_state'].value_counts()[data['loc_state'].value_counts()>2]
+
+    data['loc_name'] = data['loc_name'].apply(lambda n: n if n in top_names else "other")
+    data['loc_state'] = data['loc_state'].apply(lambda n: n if n in top_states else "other")
+
+    # Calculates campaign length, thanks to @paulo
+    data['campaign_active_length'] = pd.to_timedelta(data['deadline'] - data['launched_at'], unit='s').dt.days
+    data['campaign_total_length'] = pd.to_timedelta(data['deadline'] - data['created_at'], unit='s').dt.days
+    data['campaign_prep_length'] = pd.to_timedelta(data['launched_at'] - data['created_at'], unit='s').dt.days
+    
+     msk_eval = df.evaluation_set
+
+    X = data[~msk_eval].drop(["state"], axis=1)
+    y = data[~msk_eval]["state"]
+    X_eval = df[msk_eval].drop(["state"], axis=1)
+
     return X, y, X_eval
 
 
@@ -61,13 +106,60 @@ def train(X, y):
     :return: a trained model
     """
 
-    model = MultinomialNB()
-    model.fit(X, y)
+    numeric_features = ['goal', 'launched_at_day', 'launched_at_month',
+                        'launched_at_year', 'deadline_day',"deadline_month",
+                        'deadline_year', 'created_at_day','created_at_month',
+                        'created_at_year', 'campaign_active_length',
+                        'campaign_total_length', 'campaign_prep_length']
+    numeric_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='median')),
+        ('scaler', StandardScaler())])
+
+    text_features = 'blurb'
+    text_transformer = Pipeline([
+        ('vect', CountVectorizer(ngram_range=(1,3))),
+        ('tfidf', TfidfTransformer(use_idf=True)),
+    ])
+
+    name_features = 'name'
+    name_transformer = Pipeline([
+        ('vect_n', CountVectorizer(ngram_range=(1,3))),
+        ('tfidf_n', TfidfTransformer(use_idf=True)),
+    ])
+
+    categorical_features = ['country','cat_slug','loc_name','loc_state'] #removed currency
+    categorical_transformer = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+        ('onehot', OneHotEncoder(handle_unknown='ignore')),
+    ])
+
+
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_features),
+            ('cat', categorical_transformer, categorical_features),
+            ('text_blurb', text_transformer, text_features),
+            ('name_blurb', text_transformer, name_features)
+        ])
+
+    # Append classifier to preprocessing pipeline.
+    # Now we have a full prediction pipeline.
+    model = Pipeline(steps=[('preprocessor', preprocessor),
+                          ('sgd',SGDClassifier(alpha=6e-05, average=False, class_weight=None,
+                                   early_stopping=False, epsilon=0.1, eta0=0.0,
+                                   fit_intercept=True, l1_ratio=0.15,
+                                   learning_rate='optimal', loss='hinge',
+                                   max_iter=140, n_iter_no_change=5, n_jobs=None,
+                                   penalty='l2', power_t=0.5, random_state=None,
+                                   shuffle=True, tol=0.001, validation_fraction=0.1,
+                                   verbose=0, warm_start=False))]) #('svc', LinearSVC(dual=False) 74.4
+
+    model.fit(X_train, y_train)
     return model
 
 
 def predict(model, X_test):
-    """This functions takes your trained model as well
+    """This functions takes your trained model as well 
     as a processed test dataset and returns predictions.
 
     On KATE, the processed test dataset will be the X_eval you built
@@ -75,8 +167,8 @@ def predict(model, X_test):
     you can try to generate predictions using a sample test set of your
     choice.
 
-    This should return your predictions either as a pd.DataFrame with one
-    column or a pd.Series
+    This should return your predictions either as a pd.DataFrame with one column
+    or a pd.Series
 
     :param model: your trained model
     :param X_test: a processed test set (on KATE it will be X_eval)
