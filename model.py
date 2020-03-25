@@ -16,7 +16,7 @@ from sklearn.compose import ColumnTransformer
 # from sklearn.svm import LinearSVC
 from sklearn.metrics import classification_report
 from sklearn.linear_model import SGDClassifier
-from sklearn.model_selection import GridSearchCV
+# from sklearn.model_selection import GridSearchCV
 
 
 def preprocess(data):
@@ -62,10 +62,10 @@ def preprocess(data):
 
     # convert time dependent fields into datetime and add extra date fields
     from datetime import datetime
-    utc_time = lambda ts: datetime.utcfromtimestamp(ts)
 
     for col in ['launched_at', 'deadline', 'created_at']:
-        data[col] = data[col].apply(utc_time)
+        data[col] = data[col].apply(
+            lambda ts: datetime.utcfromtimestamp(ts))
         data[f'{col}_day'] = pd.DatetimeIndex(data[col]).day
         data[f'{col}_month'] = pd.DatetimeIndex(data[col]).month
         data[f'{col}_year'] = pd.DatetimeIndex(data[col]).year
@@ -91,6 +91,7 @@ def preprocess(data):
     data['campaign_total_length'] = pd.to_timedelta(data['deadline'] - data['created_at'], unit='s').dt.days
     data['campaign_prep_length'] = pd.to_timedelta(data['launched_at'] - data['created_at'], unit='s').dt.days
 
+    data['goal_per_active_day'] = data['goal'] / data['campaign_active_length']
     msk_eval = data.evaluation_set
 
     X = data[~msk_eval].drop(["state"], axis=1)
@@ -109,17 +110,19 @@ def train(X, y):
     :type y: pd.DataFrame with one column or pd.Series
     :return: a trained model
     """
-
     numeric_features = ['goal', 'launched_at_day', 'launched_at_month',
                         'launched_at_year', 'deadline_day', "deadline_month",
                         'deadline_year', 'created_at_day', 'created_at_month',
                         'created_at_year', 'campaign_active_length',
-                        'campaign_total_length', 'campaign_prep_length']
+                        'campaign_total_length', 'campaign_prep_length',
+                        'goal_per_active_day']
+
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())])
 
     text_features = 'blurb'
+
     text_transformer = Pipeline([
         ('vect', CountVectorizer(ngram_range=(1, 3))),
         ('tfidf', TfidfTransformer(use_idf=True)),
@@ -131,7 +134,7 @@ def train(X, y):
         ('tfidf_n', TfidfTransformer(use_idf=True)),
     ])
 
-    categorical_features = ['country','cat_slug','loc_name','loc_state']
+    categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
     categorical_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
         ('onehot', OneHotEncoder(handle_unknown='ignore')),
@@ -150,14 +153,14 @@ def train(X, y):
     model = Pipeline(
         steps=[('preprocessor', preprocessor),
                ('sgd', SGDClassifier(
-                    alpha=6e-05, average=False, class_weight=None,
-                    early_stopping=False, epsilon=0.1, eta0=0.0,
-                    fit_intercept=True, l1_ratio=0.15,
-                    learning_rate='optimal', loss='hinge',
-                    max_iter=140, n_iter_no_change=5, n_jobs=None,
-                    penalty='l2', power_t=0.5, random_state=None,
-                    shuffle=True, tol=0.001, validation_fraction=0.1,
-                    verbose=0, warm_start=False))])
+                alpha=6e-05, average=False, class_weight=None,
+                early_stopping=False, epsilon=0.1, eta0=0.0,
+                fit_intercept=True, l1_ratio=0.15,
+                learning_rate='optimal', loss='hinge',
+                max_iter=180, n_iter_no_change=5, n_jobs=None,
+                penalty='l2', power_t=0.5, random_state=None,
+                shuffle=True, tol=0.001, validation_fraction=0.1,
+                verbose=0, warm_start=False))])
     model.fit(X, y)
     return model
 
