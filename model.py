@@ -12,6 +12,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import SGDClassifier
 
 
+
 def preprocess(data):
     """This function takes a dataframe and preprocesses it so it is
     ready for the training stage.
@@ -69,15 +70,15 @@ def preprocess(data):
     data['loc_name'] = data['location'].apply(
         lambda x: json.loads(x).get('name') if (np.all(pd.notnull(x))) else "Other")
     # get only states with > 5 examples and names > 50 examples
-    #top_names = data['loc_name'].value_counts()[
-        #data['loc_name'].value_counts() > 10]
-    #top_states = data['loc_state'].value_counts()[
-        #data['loc_state'].value_counts() > 2]
+    top_names = data['loc_name'].value_counts()[
+        data['loc_name'].value_counts() > 10]
+    top_states = data['loc_state'].value_counts()[
+        data['loc_state'].value_counts() > 2]
 
-    #data['loc_name'] = data['loc_name'].apply(
-        #lambda n: n if n in top_names else "other")
-    #data['loc_state'] = data['loc_state'].apply(
-        #lambda n: n if n in top_states else "other")
+    data['loc_name'] = data['loc_name'].apply(
+        lambda n: n if n in top_names else "other")
+    data['loc_state'] = data['loc_state'].apply(
+        lambda n: n if n in top_states else "other")
 
     # Calculates campaign length, thanks to @paulo
     data['campaign_active_length'] = pd.to_timedelta(data['deadline'] - data['launched_at'], unit='s').dt.days
