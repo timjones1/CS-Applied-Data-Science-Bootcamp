@@ -57,8 +57,7 @@ def preprocess(data):
     from datetime import datetime
 
     for col in ['launched_at', 'deadline', 'created_at']:
-        data[col] = data[col].apply(
-            lambda ts: datetime.utcfromtimestamp(ts))
+        data[col] = data[col].apply(datetime.utcfromtimestamp)
         data[f'{col}_day'] = pd.DatetimeIndex(data[col]).day
         data[f'{col}_month'] = pd.DatetimeIndex(data[col]).month
         data[f'{col}_year'] = pd.DatetimeIndex(data[col]).year
