@@ -12,7 +12,6 @@ from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import SGDClassifier
 
 
-
 def preprocess(data):
     """This function takes a dataframe and preprocesses it so it is
     ready for the training stage.
