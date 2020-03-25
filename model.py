@@ -123,8 +123,8 @@ def train(X, y):
 
     name_features = 'name'
     name_transformer = Pipeline([
-        ('vect_n', CountVectorizer()),
-        ('tfidf_n', TfidfTransformer(use_idf=False)),
+        ('vect_n', CountVectorizer(ngram_range=(1, 3))),
+        ('tfidf_n', TfidfTransformer(use_idf=True)),
     ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
@@ -150,7 +150,7 @@ def train(X, y):
                    early_stopping=False, epsilon=0.1, eta0=0.0,
                    fit_intercept=True, l1_ratio=0.15,
                    learning_rate='optimal', loss='hinge',
-                   max_iter=200, n_iter_no_change=5, n_jobs=None,
+                   max_iter=180, n_iter_no_change=5, n_jobs=None,
                    penalty='l2', power_t=0.5, random_state=None,
                    shuffle=True, tol=0.001, validation_fraction=0.1,
                    verbose=0, warm_start=False))])
