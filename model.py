@@ -66,6 +66,9 @@ def preprocess(data):
     # extract location info
     data['loc_state'] = data['location'].apply(
         lambda x: json.loads(x).get('state') if (np.all(pd.notnull(x))) else "Other")
+    data['loc_type'] = data['location'].apply(
+        lambda x: json.loads(x).get('type') if (np.all(pd.notnull(x))) else "Other")
+
     data['loc_name'] = data['location'].apply(
         lambda x: json.loads(x).get('name') if (np.all(pd.notnull(x))) else "Other")
     # get only states with > 5 examples and names > 50 examples
@@ -124,7 +127,7 @@ def train(X, y):
     name_features = 'name'
     name_transformer = Pipeline([
         ('vect_n', CountVectorizer(ngram_range=(1, 3))),
-        ('tfidf_n', TfidfTransformer(use_idf=True)),
+        ('tfidf_n', TfidfTransformer(use_idf=False)),
     ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
@@ -146,11 +149,11 @@ def train(X, y):
     model = Pipeline(
         steps=[('preprocessor', preprocessor),
                ('sgd', SGDClassifier(
-                   alpha=6e-05, average=False, class_weight=None,
+                   alpha=8e-05, average=False, class_weight=None,
                    early_stopping=False, epsilon=0.1, eta0=0.0,
                    fit_intercept=True, l1_ratio=0.15,
                    learning_rate='optimal', loss='hinge',
-                   max_iter=180, n_iter_no_change=5, n_jobs=None,
+                   max_iter=300, n_iter_no_change=5, n_jobs=None,
                    penalty='l2', power_t=0.5, random_state=None,
                    shuffle=True, tol=0.001, validation_fraction=0.1,
                    verbose=0, warm_start=False))])
