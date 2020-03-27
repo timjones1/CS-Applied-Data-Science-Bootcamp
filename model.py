@@ -126,7 +126,7 @@ def train(X, y):
 
     name_features = 'name'
     name_transformer = Pipeline([
-        ('vect_n', CountVectorizer(ngram_range=(1, 3))),
+        ('vect_n', CountVectorizer(ngram_range=(1, 1))),
         ('tfidf_n', TfidfTransformer(use_idf=False)),
     ])
 
