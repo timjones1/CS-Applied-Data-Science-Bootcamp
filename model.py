@@ -142,7 +142,14 @@ def train(X, y):
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
             ('name_blurb', name_transformer, name_features)
-        ])
+        ], 
+        transformer_weights={
+            'num': 1.0,
+            'cat': 1.0,
+            'text_blurb': 2.2,
+            'text_name': 0.8,
+        }
+    )
 
     # Append classifier to preprocessing pipeline.
     # Now we have a full prediction pipeline.
