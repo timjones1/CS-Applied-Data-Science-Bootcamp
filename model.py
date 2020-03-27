@@ -146,8 +146,8 @@ def train(X, y):
         transformer_weights={
             'num': 1.0,
             'cat': 1.0,
-            'text_blurb': 2.5,
-            #'text_name': 0.8,
+            'text_blurb': 1.8,
+            # 'text_name': 0.8,
         }
     )
 
