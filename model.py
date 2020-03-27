@@ -124,11 +124,11 @@ def train(X, y):
         ('tfidf', TfidfTransformer(use_idf=True)),
     ])
 
-    name_features = 'name'
-    name_transformer = Pipeline([
-        ('vect_n', CountVectorizer(ngram_range=(1, 3))),
-        ('tfidf_n', TfidfTransformer(use_idf=False)),
-    ])
+    # name_features = 'name'
+    # name_transformer = Pipeline([
+    #     ('vect_n', CountVectorizer(ngram_range=(1, 3))),
+    #     ('tfidf_n', TfidfTransformer(use_idf=False)),
+    # ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
     categorical_transformer = Pipeline(steps=[
@@ -141,13 +141,13 @@ def train(X, y):
             ('num', numeric_transformer, numeric_features),
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
-            ('name_blurb', name_transformer, name_features)
+            #('name_blurb', name_transformer, name_features)
         ],
         transformer_weights={
             'num': 1.0,
             'cat': 1.0,
-            'text_blurb': 2.2,
-            'text_name': 0.8,
+            'text_blurb': 2.5,
+            #'text_name': 0.8,
         }
     )
 
@@ -160,7 +160,7 @@ def train(X, y):
                    early_stopping=False, epsilon=0.1, eta0=0.0,
                    fit_intercept=True, l1_ratio=0.15,
                    learning_rate='optimal', loss='hinge',
-                   max_iter=200, n_iter_no_change=5, n_jobs=None,
+                   max_iter=400, n_iter_no_change=5, n_jobs=None,
                    penalty='l2', power_t=0.5, random_state=None,
                    shuffle=True, tol=0.001, validation_fraction=0.1,
                    verbose=0, warm_start=False))])
