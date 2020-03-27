@@ -126,8 +126,8 @@ def train(X, y):
 
     name_features = 'name'
     name_transformer = Pipeline([
-        ('vect_n', CountVectorizer(ngram_range=(1, 1))),
-        ('tfidf_n', TfidfTransformer(use_idf=False)),
+        ('vect_n', CountVectorizer(ngram_range=(1, 2))),
+        ('tfidf_n', TfidfTransformer()),
     ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
