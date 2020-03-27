@@ -142,7 +142,7 @@ def train(X, y):
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
             ('name_blurb', name_transformer, name_features)
-        ], 
+        ],
         transformer_weights={
             'num': 1.0,
             'cat': 1.0,
@@ -160,7 +160,7 @@ def train(X, y):
                    early_stopping=False, epsilon=0.1, eta0=0.0,
                    fit_intercept=True, l1_ratio=0.15,
                    learning_rate='optimal', loss='hinge',
-                   max_iter=300, n_iter_no_change=5, n_jobs=None,
+                   max_iter=200, n_iter_no_change=5, n_jobs=None,
                    penalty='l2', power_t=0.5, random_state=None,
                    shuffle=True, tol=0.001, validation_fraction=0.1,
                    verbose=0, warm_start=False))])
