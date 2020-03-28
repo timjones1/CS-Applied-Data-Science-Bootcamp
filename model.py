@@ -9,9 +9,10 @@ from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.linear_model import SGDClassifier
+# from sklearn.linear_model import SGDClassifier
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from sklearn.ensemble import GradientBoostingClassifier
 
 
 def preprocess(data):
@@ -108,7 +109,7 @@ def train(X, y):
     :type y: pd.DataFrame with one column or pd.Series
     :return: a trained model
     """
-    
+
     NGRAM_RANGE = (1, 3)
     # Whether text should be split into word or character n-grams.
     # One of 'word', 'char'.
@@ -175,17 +176,10 @@ def train(X, y):
 
     # Append classifier to preprocessing pipeline.
     # Now we have a full prediction pipeline.
-    model = Pipeline(
-        steps=[('preprocessor', preprocessor),
-               ('sgd', SGDClassifier(
-                   alpha=5e-05, average=False, class_weight=None,
-                   early_stopping=False, epsilon=0.1, eta0=0.0,
-                   fit_intercept=True, l1_ratio=0.15,
-                   learning_rate='optimal', loss='hinge',
-                   max_iter=300, n_iter_no_change=5, n_jobs=None,
-                   penalty='l2', power_t=0.5, random_state=None,
-                   shuffle=True, tol=0.001, validation_fraction=0.1,
-                   verbose=0, warm_start=False))])
+
+    model = Pipeline(steps=[('preprocessor', preprocessor),
+                            ('gbc', GradientBoostingClassifier(n_estimators=60,
+                             learning_rate=1.0, max_depth=2, random_state=0, ))])
     model.fit(X, y)
     return model
 
@@ -199,7 +193,7 @@ def predict(model, X_test):
     you can try to generate predictions using a sample test set of your
     choice.
 
-    This should return your predictions either as a pd.DataFrame with one column
+    This should return your predictions either as a pd.DataFrame with onecolumn
     or a pd.Series
 
     :param model: your trained model
