@@ -178,8 +178,9 @@ def train(X, y):
     # Now we have a full prediction pipeline.
 
     model = Pipeline(steps=[('preprocessor', preprocessor),
-                            ('gbc', GradientBoostingClassifier(n_estimators=60,
-                             learning_rate=1.0, max_depth=2, random_state=0, ))])
+                            ('gbc', GradientBoostingClassifier(
+                                n_estimators=60,learning_rate=1.0,
+                                max_depth=2, random_state=0, ))])
     model.fit(X, y)
     return model
 
