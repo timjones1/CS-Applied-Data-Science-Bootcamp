@@ -150,7 +150,6 @@ def train(X, y):
     name_features = 'name'
     name_transformer = Pipeline([
         ('vect_n', CountVectorizer(ngram_range=(1, 2))),
-        ('tfidf_n', TfidfTransformer()),
     ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
@@ -179,7 +178,7 @@ def train(X, y):
 
     model = Pipeline(steps=[('preprocessor', preprocessor),
                             ('gbc', GradientBoostingClassifier(
-                                n_estimators=60,learning_rate=1.0,
+                                n_estimators=50,learning_rate=1.0,
                                 max_depth=2, random_state=0, ))])
     model.fit(X, y)
     return model
