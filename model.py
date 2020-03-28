@@ -143,7 +143,7 @@ def train(X, y):
 
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
-        ('tfidf', TfidfTransformer(use_idf=True)),
+        # ('tfidf', TfidfTransformer(use_idf=True)),
         ('selector', SelectKBest(chi2, TOP_K)),
     ])
 
