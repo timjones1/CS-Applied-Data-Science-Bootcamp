@@ -10,6 +10,8 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import SGDClassifier
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 
 
 def preprocess(data):
@@ -106,6 +108,25 @@ def train(X, y):
     :type y: pd.DataFrame with one column or pd.Series
     :return: a trained model
     """
+    
+    NGRAM_RANGE = (1, 3)
+    # Whether text should be split into word or character n-grams.
+    # One of 'word', 'char'.
+    TOKEN_MODE = 'word'
+    # Minimum document/corpus frequency below which a token will be discarded.
+    MIN_DOCUMENT_FREQUENCY = 2
+    # Limit on the number of features. We use the top 10K features.
+    TOP_K = 5000
+    # Create keyword arguments to pass to the vectorizer.
+    kwargs = {
+        'ngram_range': NGRAM_RANGE,  # Use 1-grams + 2-grams.
+        'dtype': 'int32',
+        'strip_accents': 'unicode',
+        'decode_error': 'replace',
+        'analyzer': TOKEN_MODE,  # Split text into word tokens.
+        'min_df': MIN_DOCUMENT_FREQUENCY,
+    }
+
     numeric_features = ['goal', 'launched_at_day', 'launched_at_month',
                         'launched_at_year', 'deadline_day', "deadline_month",
                         'deadline_year', 'created_at_day', 'created_at_month',
@@ -120,8 +141,9 @@ def train(X, y):
     text_features = 'blurb'
 
     text_transformer = Pipeline([
-        ('vect', CountVectorizer(ngram_range=(1, 3))),
+        ('vect', CountVectorizer(**kwargs)),
         ('tfidf', TfidfTransformer(use_idf=True)),
+        ('selector', SelectKBest(chi2, TOP_K)),
     ])
 
     name_features = 'name'
