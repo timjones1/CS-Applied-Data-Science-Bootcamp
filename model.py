@@ -117,7 +117,7 @@ def train(X, y):
     # Minimum document/corpus frequency below which a token will be discarded.
     MIN_DOCUMENT_FREQUENCY = 2
     # Limit on the number of features. We use the top 10K features.
-    TOP_K = 1000
+    TOP_K = 2000
     # Create keyword arguments to pass to the vectorizer.
     kwargs = {
         'ngram_range': NGRAM_RANGE,  # Use 1-grams + 2-grams.
@@ -143,7 +143,7 @@ def train(X, y):
 
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
-        ('tfidf', TfidfTransformer(use_idf=True)),
+        # ('tfidf', TfidfTransformer(use_idf=True)),
         ('selector', SelectKBest(chi2, TOP_K)),
     ])
 
@@ -178,7 +178,7 @@ def train(X, y):
 
     model = Pipeline(steps=[('preprocessor', preprocessor),
                             ('gbc', GradientBoostingClassifier(
-                                n_estimators=45, learning_rate=1.0,
+                                n_estimators=55, learning_rate=1.0,validation_fraction=0.15,
                                 max_depth=3, random_state=0, ))])
     model.fit(X, y)
     return model
