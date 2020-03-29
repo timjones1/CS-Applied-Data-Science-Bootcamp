@@ -118,7 +118,7 @@ def train(X, y):
     # Minimum document/corpus frequency below which a token will be discarded.
     MIN_DOCUMENT_FREQUENCY = 2
     # Limit on the number of features. We use the top 10K features.
-    TOP_K = 5000
+    TOP_K = 2000
     # Create keyword arguments to pass to the vectorizer.
     kwargs = {
         'ngram_range': NGRAM_RANGE,  # Use 1-grams + 2-grams.
@@ -142,29 +142,30 @@ def train(X, y):
     text_features = 'blurb'
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
-        ('tfidf', TfidfTransformer(use_idf=True)),
+    #     ('tfidf', TfidfTransformer(use_idf=True)),
         ('selector', SelectKBest(chi2,TOP_K))
     ])
 
-    name_features = 'name'
-    name_transformer = Pipeline([
-        ('vect_n', CountVectorizer(ngram_range=(1,2))),
-        ('selector', SelectKBest(chi2,TOP_K)),
-    ])
+    # name_features = 'name'
+    # name_transformer = Pipeline([
+    #     ('vect_n', CountVectorizer(ngram_range=(1,2))),
+    #     ('tfidf_n', TfidfTransformer()),
+    # ])
 
-    categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
+    categorical_features = ['country','cat_slug','loc_name','loc_state'] #removed currency
     categorical_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
         ('onehot', OneHotEncoder(handle_unknown='ignore')),
     ])
+
 
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', numeric_transformer, numeric_features),
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
-            # ('text_name', name_transformer, name_features),
-
+    #         ('text_name', name_transformer, name_features),
+            
         ], transformer_weights={
                 'num': 1.2,
                 'cat': 1.0,
@@ -175,18 +176,19 @@ def train(X, y):
     # Append classifier to preprocessing pipeline.
     # Now we have a full prediction pipeline.
     model = Pipeline(steps=[('preprocessor', preprocessor),
-                            ('xgb', XGBClassifier(silent=False, 
-                             scale_pos_weight=1,
-                             learning_rate=0.01,  
-                             colsample_bytree = 0.4,
-                             subsample = 0.8,
-                             objective='binary:logistic', 
-                             n_estimators=250, 
-                             reg_alpha = 0.3,
-                             max_depth=4, 
-                             gamma=10))])
-                            #('gbc',GradientBoostingClassifier(n_estimators=55,learning_rate=1.0,
-                            #        max_depth=3, random_state=0,validation_fraction=0.15, 
+                            ('xgb', XGBClassifier(
+                                silent=False, 
+                                scale_pos_weight=1,
+                                learning_rate=0.09, 
+                                colsample_bytree = 0.5,
+                                subsample = 0.8,
+                                objective='binary:logistic', 
+                                n_estimators=700, 
+                                reg_alpha = 0.3,
+                                max_depth=5, 
+                                gamma=10))]) 
+
+
 
     model.fit(X, y)
     return model
