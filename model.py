@@ -13,6 +13,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 from sklearn.ensemble import GradientBoostingClassifier
+from xgboost import XGBClassifier
 
 
 def preprocess(data):
@@ -128,58 +129,59 @@ def train(X, y):
         'min_df': MIN_DOCUMENT_FREQUENCY,
     }
 
-    numeric_features = ['goal', 'launched_at_day', 'launched_at_month',
-                        'launched_at_year', 'deadline_day', "deadline_month",
-                        'deadline_year', 'created_at_day', 'created_at_month',
-                        'created_at_year', 'campaign_active_length',
-                        'campaign_total_length', 'campaign_prep_length',
-                        'goal_per_active_day']
-
+    numeric_features= ['goal',"blurb_length","name_length","launched_at_day",
+                   "launched_at_month","launched_at_year","deadline_day",
+                   "deadline_month","deadline_year","created_at_day",
+                   "created_at_month","created_at_year","campaign_active_length",
+                   "campaign_total_length","campaign_prep_length",
+                   'goal_per_active_day']
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())])
 
     text_features = 'blurb'
-
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
-        # ('tfidf', TfidfTransformer(use_idf=True)),
-        ('selector', SelectKBest(chi2, TOP_K)),
+    #     ('tfidf', TfidfTransformer(use_idf=True)),
+        ('selector', SelectKBest(chi2,TOP_K))
     ])
 
     # name_features = 'name'
     # name_transformer = Pipeline([
-    #     ('vect_n', CountVectorizer(ngram_range=(1, 2))),
+    #     ('vect_n', CountVectorizer(ngram_range=(1,2))),
+    #     ('tfidf_n', TfidfTransformer()),
     # ])
 
-    categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
+    categorical_features = ['country','cat_slug','loc_name','loc_state'] #removed currency
     categorical_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
         ('onehot', OneHotEncoder(handle_unknown='ignore')),
     ])
+
 
     preprocessor = ColumnTransformer(
         transformers=[
             ('num', numeric_transformer, numeric_features),
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
-            # ('name_blurb', name_transformer, name_features)
-        ],
-        transformer_weights={
-            'num': 1.2,
-            'cat': 1.0,
-            'text_blurb': 1.8,
-            'text_name': 0.8,
+    #         ('text_name', name_transformer, name_features),
+            
+        ], transformer_weights={
+                'num': 1.2,
+                'cat': 1.0,
+                'text_blurb': 1.8,
+                'text_name': 0.8,
         }
     )
-
     # Append classifier to preprocessing pipeline.
     # Now we have a full prediction pipeline.
-
     model = Pipeline(steps=[('preprocessor', preprocessor),
-                            ('gbc', GradientBoostingClassifier(
-                                n_estimators=55, learning_rate=1.0,validation_fraction=0.15,
-                                max_depth=3, random_state=0, ))])
+                            ('gbc',GradientBoostingClassifier(n_estimators=55,learning_rate=1.0,
+                                    max_depth=3, random_state=0,validation_fraction=0.15,
+                        ))]) 
+
+
+
     model.fit(X, y)
     return model
 
