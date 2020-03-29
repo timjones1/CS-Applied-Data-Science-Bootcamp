@@ -147,10 +147,10 @@ def train(X, y):
         ('selector', SelectKBest(chi2, TOP_K)),
     ])
 
-    name_features = 'name'
-    name_transformer = Pipeline([
-        ('vect_n', CountVectorizer(ngram_range=(1, 2))),
-    ])
+    # name_features = 'name'
+    # name_transformer = Pipeline([
+    #     ('vect_n', CountVectorizer(ngram_range=(1, 2))),
+    # ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
     categorical_transformer = Pipeline(steps=[
