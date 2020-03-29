@@ -182,7 +182,7 @@ def train(X, y):
                                 colsample_bytree=0.5,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=600,
+                                n_estimators=300,
                                 reg_alpha=0.3,
                                 max_depth=5,
                                 gamma=10))]) 
