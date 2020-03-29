@@ -117,7 +117,7 @@ def train(X, y):
     # Minimum document/corpus frequency below which a token will be discarded.
     MIN_DOCUMENT_FREQUENCY = 3
     # Limit on the number of features. We use the top 10K features.
-    TOP_K = 3000
+    TOP_K = 1000
     # Create keyword arguments to pass to the vectorizer.
     kwargs = {
         'ngram_range': NGRAM_RANGE,  # Use 1-grams + 2-grams.
