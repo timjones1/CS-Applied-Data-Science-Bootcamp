@@ -115,7 +115,7 @@ def train(X, y):
     # One of 'word', 'char'.
     TOKEN_MODE = 'word'
     # Minimum document/corpus frequency below which a token will be discarded.
-    MIN_DOCUMENT_FREQUENCY = 3
+    MIN_DOCUMENT_FREQUENCY = 2
     # Limit on the number of features. We use the top 10K features.
     TOP_K = 1000
     # Create keyword arguments to pass to the vectorizer.
@@ -147,10 +147,10 @@ def train(X, y):
         ('selector', SelectKBest(chi2, TOP_K)),
     ])
 
-    # name_features = 'name'
-    # name_transformer = Pipeline([
-    #     ('vect_n', CountVectorizer(ngram_range=(1, 2))),
-    # ])
+    name_features = 'name'
+    name_transformer = Pipeline([
+        ('vect_n', CountVectorizer(ngram_range=(1, 2))),
+    ])
 
     categorical_features = ['country', 'cat_slug', 'loc_name', 'loc_state']
     categorical_transformer = Pipeline(steps=[
@@ -163,7 +163,7 @@ def train(X, y):
             ('num', numeric_transformer, numeric_features),
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
-            # ('name_blurb', name_transformer, name_features)
+            ('name_blurb', name_transformer, name_features)
         ],
         transformer_weights={
             'num': 1.2,
