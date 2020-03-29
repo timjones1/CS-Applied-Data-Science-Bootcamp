@@ -163,7 +163,7 @@ def train(X, y):
             ('num', numeric_transformer, numeric_features),
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
-            ('name_blurb', name_transformer, name_features)
+            # ('name_blurb', name_transformer, name_features)
         ],
         transformer_weights={
             'num': 1.2,
