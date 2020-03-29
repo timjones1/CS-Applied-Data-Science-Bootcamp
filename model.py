@@ -12,7 +12,7 @@ from sklearn.compose import ColumnTransformer
 # from sklearn.linear_model import SGDClassifier
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
-from sklearn.ensemble import GradientBoostingClassifier
+# from sklearn.ensemble import GradientBoostingClassifier
 from xgboost import XGBClassifier
 
 
@@ -129,7 +129,7 @@ def train(X, y):
         'min_df': MIN_DOCUMENT_FREQUENCY,
     }
 
-    numeric_features= ['goal', "blurb_length", "name_length", "launched_at_day",
+    numeric_features = ['goal', "blurb_length", "name_length", "launched_at_day",
                        "launched_at_month", "launched_at_year", "deadline_day",
                        "deadline_month", "deadline_year", "created_at_day",
                        "created_at_month", "created_at_year", "campaign_active_length",
@@ -143,7 +143,7 @@ def train(X, y):
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
         ('tfidf', TfidfTransformer(use_idf=True)),
-        ('selector', SelectKBest(chi2,TOP_K))
+        ('selector', SelectKBest(chi2, TOP_K))
     ])
 
     # name_features = 'name'
@@ -164,12 +164,12 @@ def train(X, y):
             ('cat', categorical_transformer, categorical_features),
             ('text_blurb', text_transformer, text_features),
             # ('text_name', name_transformer, name_features),
- 
+
         ], transformer_weights={
-                'num': 1.2,
-                'cat': 1.0,
-                'text_blurb': 1.8,
-                'text_name': 0.8,
+            'num': 1.2,
+            'cat': 1.0,
+            'text_blurb': 1.8,
+            'text_name': 0.8,
         }
     )
     # Append classifier to preprocessing pipeline.
@@ -185,7 +185,7 @@ def train(X, y):
                                 n_estimators=500,
                                 reg_alpha=0.3,
                                 max_depth=5,
-                                gamma=10))]) 
+                                gamma=10))])
 
     model.fit(X, y)
     return model
