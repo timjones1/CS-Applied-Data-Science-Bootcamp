@@ -110,7 +110,7 @@ def train(X, y):
     :return: a trained model
     """
 
-    NGRAM_RANGE = (1, 3)
+    NGRAM_RANGE = (1, 2)
     # Whether text should be split into word or character n-grams.
     # One of 'word', 'char'.
     TOKEN_MODE = 'word'
