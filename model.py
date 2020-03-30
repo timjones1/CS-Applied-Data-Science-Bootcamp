@@ -178,11 +178,11 @@ def train(X, y):
                             ('xgb', XGBClassifier(
                                 silent=False,
                                 scale_pos_weight=1,
-                                learning_rate=0.09,
+                                learning_rate=0.1,
                                 colsample_bytree=0.25,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=450,
+                                n_estimators=400,
                                 reg_alpha=0.3,
                                 max_depth=5,
                                 gamma=10))])
