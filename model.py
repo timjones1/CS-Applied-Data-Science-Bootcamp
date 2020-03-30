@@ -143,7 +143,7 @@ def train(X, y):
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
         ('tfidf', TfidfTransformer(use_idf=True)),
-        ('svd', TruncatedSVD(algorithm='randomized', n_components=300)),
+        ('svd', TruncatedSVD(algorithm='randomized', n_components=800)),
         # ('selector', SelectKBest(chi2, top_k))
     ])
 
