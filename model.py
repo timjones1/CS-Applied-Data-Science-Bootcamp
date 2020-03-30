@@ -184,7 +184,7 @@ def train(X, y):
                                 objective='binary:logistic',
                                 n_estimators=200,
                                 reg_alpha=0.3,
-                                max_depth=4,
+                                max_depth=5,
                                 gamma=10))])
 
     model.fit(X, y)
