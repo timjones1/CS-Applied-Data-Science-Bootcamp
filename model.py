@@ -118,7 +118,7 @@ def train(X, y):
     # Minimum document/corpus frequency below which a token will be discarded.
     MIN_DOCUMENT_FREQUENCY = 2
     # Limit on the number of features. We use the top 10K features.
-    TOP_K = 2000
+    TOP_K = 5000
     # Create keyword arguments to pass to the vectorizer.
     kwargs = {
         'ngram_range': NGRAM_RANGE,  # Use 1-grams + 2-grams.
@@ -182,9 +182,9 @@ def train(X, y):
                                 colsample_bytree=0.25,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=400,
+                                n_estimators=500,
                                 reg_alpha=0.3,
-                                max_depth=5,
+                                max_depth=4,
                                 gamma=10))])
 
     model.fit(X, y)
