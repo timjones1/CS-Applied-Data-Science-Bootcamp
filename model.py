@@ -14,7 +14,7 @@ from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
 # from sklearn.ensemble import GradientBoostingClassifier
 from xgboost import XGBClassifier
-from sklearn.decomposition import TruncatedSVD
+
 
 def preprocess(data):
     """This function takes a dataframe and preprocesses it so it is
@@ -118,7 +118,7 @@ def train(X, y):
     # Minimum document/corpus frequency below which a token will be discarded.
     min_doc_frequency = 2
     # Limit on the number of features. We use the top 10K features.
-    # top_k = 5000 , replaced by Truncated SVD
+    top_k = 10000
     # Create keyword arguments to pass to the vectorizer.
     kwargs = {
         'ngram_range': ngram_range,  # Use 1-grams + 2-grams.
@@ -143,8 +143,7 @@ def train(X, y):
     text_transformer = Pipeline([
         ('vect', CountVectorizer(**kwargs)),
         ('tfidf', TfidfTransformer(use_idf=True)),
-        ('svd', TruncatedSVD(algorithm='randomized', n_components=800)),
-        # ('selector', SelectKBest(chi2, top_k))
+        ('selector', SelectKBest(chi2, top_k))
     ])
 
     # name_features = 'name'
@@ -183,7 +182,7 @@ def train(X, y):
                                 colsample_bytree=0.3,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=225,
+                                n_estimators=245,
                                 reg_alpha=0.3,
                                 max_depth=5,
                                 gamma=10))])
