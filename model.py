@@ -179,12 +179,12 @@ def train(X, y):
                                 silent=False,
                                 scale_pos_weight=1,
                                 learning_rate=0.1,
-                                colsample_bytree=0.25,
+                                colsample_bytree=0.3,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=500,
+                                n_estimators=300,
                                 reg_alpha=0.3,
-                                max_depth=4,
+                                max_depth=5,
                                 gamma=10))])
 
     model.fit(X, y)
