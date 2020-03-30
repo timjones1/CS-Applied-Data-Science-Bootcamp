@@ -179,10 +179,10 @@ def train(X, y):
                                 silent=False,
                                 scale_pos_weight=1,
                                 learning_rate=0.09,
-                                colsample_bytree=0.5,
+                                colsample_bytree=0.25,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=500,
+                                n_estimators=450,
                                 reg_alpha=0.3,
                                 max_depth=5,
                                 gamma=10))])
