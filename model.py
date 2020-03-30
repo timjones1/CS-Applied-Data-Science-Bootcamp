@@ -111,30 +111,30 @@ def train(X, y):
     :return: a trained model
     """
 
-    NGRAM_RANGE = (1, 2)
+    ngram_range = (1, 2)
     # Whether text should be split into word or character n-grams.
     # One of 'word', 'char'.
-    TOKEN_MODE = 'word'
+    token_mode = 'word'
     # Minimum document/corpus frequency below which a token will be discarded.
-    MIN_DOCUMENT_FREQUENCY = 2
+    min_doc_frequency = 2
     # Limit on the number of features. We use the top 10K features.
     TOP_K = 5000
     # Create keyword arguments to pass to the vectorizer.
     kwargs = {
-        'ngram_range': NGRAM_RANGE,  # Use 1-grams + 2-grams.
+        'ngram_range': ngram_range,  # Use 1-grams + 2-grams.
         'dtype': 'int32',
         'strip_accents': 'unicode',
         'decode_error': 'replace',
-        'analyzer': TOKEN_MODE,  # Split text into word tokens.
-        'min_df': MIN_DOCUMENT_FREQUENCY,
+        'analyzer': token_mode,  # Split text into word tokens.
+        'min_df': min_doc_frequency,
     }
 
     numeric_features = ['goal', "blurb_length", "name_length", "launched_at_day",
-                       "launched_at_month", "launched_at_year", "deadline_day",
-                       "deadline_month", "deadline_year", "created_at_day",
-                       "created_at_month", "created_at_year", "campaign_active_length",
-                       "campaign_total_length", "campaign_prep_length",
-                       'goal_per_active_day']
+                        "launched_at_month", "launched_at_year", "deadline_day",
+                        "deadline_month", "deadline_year", "created_at_day",
+                        "created_at_month", "created_at_year", "campaign_active_length",
+                        "campaign_total_length", "campaign_prep_length",
+                        'goal_per_active_day']
     numeric_transformer = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())])
