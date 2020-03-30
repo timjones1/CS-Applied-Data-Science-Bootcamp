@@ -182,9 +182,9 @@ def train(X, y):
                                 colsample_bytree=0.3,
                                 subsample=0.8,
                                 objective='binary:logistic',
-                                n_estimators=300,
+                                n_estimators=200,
                                 reg_alpha=0.3,
-                                max_depth=5,
+                                max_depth=4,
                                 gamma=10))])
 
     model.fit(X, y)
