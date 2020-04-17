@@ -6,7 +6,6 @@ def count_elements_in_dataset(dataset):
     :type dataset: a Spark RDD
     :return: number of elements in the RDD
     """
-
     raise NotImplementedError
 
 
@@ -18,7 +17,6 @@ def get_first_element(dataset):
     :type dataset: a Spark RDD
     :return: the first element of the RDD
     """
-
     raise NotImplementedError
 
 
@@ -31,7 +29,6 @@ def get_all_attributes(dataset):
     :type dataset: a Spark RDD
     :return: all unique attributes collected in a list
     """
-
     raise NotImplementedError
 
 
@@ -46,7 +43,6 @@ def get_elements_w_same_attributes(dataset):
     :return: an RDD containing only elements with same attributes as the
     first element
     """
-
     raise NotImplementedError
 
 
@@ -58,7 +54,6 @@ def get_min_max_timestamps(dataset):
     :return: min and max timestamp in a tuple object
     :rtype: tuple
     """
-
     raise NotImplementedError
 
 
@@ -72,7 +67,6 @@ def get_number_of_posts_per_bucket(dataset, min_time, max_time):
     :param max_time: Maximum time to consider for buckets (datetime format)
     :return: an RDD with number of elements per bucket
     """
-
     raise NotImplementedError
 
 
@@ -84,7 +78,6 @@ def get_number_of_posts_per_hour(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with number of elements per hour
     """
-
     raise NotImplementedError
 
 
@@ -96,20 +89,18 @@ def get_score_per_hour(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with average score per hour
     """
-
     raise NotImplementedError
 
 
 def get_proportion_of_scores(dataset):
     """
     It may be more useful to look at sucessful posts that get over 200 points.
-    Find the proportion of posts that get above 200 points per hour. 
+    Find the proportion of posts that get above 200 points per hour.
     This will be the number of posts with points > 200 divided by the total number of posts at this hour.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of scores over 200 per hour
     """
-
     raise NotImplementedError
 
 
@@ -126,7 +117,6 @@ def get_proportion_of_success(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of successful post per title length
     """
-
     raise NotImplementedError
 
 
@@ -141,7 +131,4 @@ def get_title_length_distribution(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the number of submissions per title length
     """
-
     raise NotImplementedError
-
-
