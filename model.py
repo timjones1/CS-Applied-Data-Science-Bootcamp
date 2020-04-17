@@ -9,5 +9,4 @@ def build_model():
 
     :return: a new instance of your model
     """
-
     raise NotImplementedError
