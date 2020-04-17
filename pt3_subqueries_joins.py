@@ -1,6 +1,4 @@
 # Part 3: Subqueries & Joins
-# NOTE: You don't need to start a sqlite session, just return the correct
-# SQL query as a string
 
 
 def top_postcodes_for_chain_stores():
@@ -13,8 +11,8 @@ def top_postcodes_for_chain_stores():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
+
 
 def inspection_scores_in_94103():
     """
@@ -25,7 +23,6 @@ def inspection_scores_in_94103():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -37,5 +34,4 @@ def risk_categories_in_94103():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError

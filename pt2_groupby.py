@@ -1,6 +1,4 @@
 # Part 2: GROUP BY
-# NOTE: You don't need to start a sqlite session, just return the correct
-# SQL query as a string
 
 
 def freq_risk_per_violation():
@@ -10,7 +8,6 @@ def freq_risk_per_violation():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -21,7 +18,6 @@ def freq_risk_per_violation_water():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -33,7 +29,6 @@ def frequency_of_inspections_types():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -47,7 +42,6 @@ def avg_score_by_inspection_type():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -59,5 +53,4 @@ def owner_per_restaurant_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError

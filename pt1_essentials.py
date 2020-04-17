@@ -1,6 +1,4 @@
 # Part 1: Essentials
-# NOTE: You don't need to start a sqlite session, just return the correct
-# SQL query as a string
 
 
 def business_ids_count():
@@ -9,7 +7,6 @@ def business_ids_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -17,11 +14,10 @@ def unique_business_names_count():
     """
     Write a SQL query that finds out how many unique business names are registered
     with San Francisco Food health investigation organization
-    and name the column as "unique restaurant name count".
+    and name the column as unique restaurant name count.
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -32,18 +28,16 @@ def first_and_last_investigation():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
 def business_local_owner_count():
     """
-    How many businesses are there where their owners live
+    How many businesses are there in San Francisco where their owners live
     in the same area (postal code/ zip code) as the business is located?
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
 
 
@@ -53,5 +47,4 @@ def business_local_owner_reg_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-
     raise NotImplementedError
