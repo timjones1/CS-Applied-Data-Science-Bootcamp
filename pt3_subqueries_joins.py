@@ -11,7 +11,8 @@ def top_postcodes_for_chain_stores():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT postal_code, count(1) AS count FROM businesses WHERE postal_code IN (SELECT postal_code FROM businesses GROUP BY postal_code ORDER BY count(postal_code) DESC LIMIT 10) AND owner_name IN (SELECT owner_name FROM businesses GROUP BY owner_name HAVING count(owner_name)>=5) GROUP BY postal_code ORDER BY count DESC
+    return "SELECT postal_code, count(1) AS count FROM businesses WHERE postal_code IN (SELECT postal_code FROM businesses GROUP BY postal_code ORDER BY count(postal_code) DESC LIMIT 10) AND owner_name IN (SELECT owner_name FROM businesses GROUP BY owner_name HAVING count(owner_name)>=5) GROUP BY postal_code ORDER BY count DESC"
+
 
 def inspection_scores_in_94103():
     """
