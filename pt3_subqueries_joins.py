@@ -34,4 +34,4 @@ def risk_categories_in_94103():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT risk_category, count(1) FROM violations INNER JOIN (SELECT business_id FROM businesses  WHERE postal_code = "94103") AS businesses_in_postcode ON violations.business_id = businesses_in_postcode.business_id GROUP BY risk_category"
+    return "SELECT risk_category, count(1) FROM violations INNER JOIN (SELECT business_id FROM businesses  WHERE postal_code = '94103') AS businesses_in_postcode ON violations.business_id = businesses_in_postcode.business_id GROUP BY risk_category"
