@@ -7,7 +7,7 @@ def business_ids_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-    raise NotImplementedError
+    return "SELECT COUNT(business_id) FROM businesses"
 
 
 def unique_business_names_count():
@@ -18,7 +18,7 @@ def unique_business_names_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-    raise NotImplementedError
+    return "SELECT count(DISTINCT name) AS unique_restaurant_name FROM businesses"
 
 
 def first_and_last_investigation():
@@ -28,7 +28,7 @@ def first_and_last_investigation():
     :return: a string representing the SQL query
     :rtype: str
     """
-    raise NotImplementedError
+    return "SELECT MIN(date), MAX(date) FROM inspections"
 
 
 def business_local_owner_count():
@@ -38,7 +38,7 @@ def business_local_owner_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-    raise NotImplementedError
+    return "SELECT Count(1) AS count_same_business_owner_address FROM businesses AS b1 INNER JOIN businesses AS b2 ON b1.business_id = b2.business_id WHERE b1.postal_code = b2.owner_zip"
 
 
 def business_local_owner_reg_count():
@@ -47,4 +47,4 @@ def business_local_owner_reg_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-    raise NotImplementedError
+    return "SELECT count(b1.business_certificate) FROM businesses AS b1 INNER JOIN businesses AS b2 ON b1.business_id = b2.business_id WHERE b1.postal_code = b2.owner_zip AND b1.business_certificate IS NOT NULL"
