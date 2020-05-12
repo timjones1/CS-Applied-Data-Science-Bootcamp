@@ -11,8 +11,7 @@ def top_postcodes_for_chain_stores():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT postal_code,count(1) AS count FROM (SELECT postal_code,count(1) AS count_owned FROM businesses GROUP BY owner_name HAVING count_owned > 5) GROUP BY postal_code ORDER BY count DESC LIMIT 10"
-
+    return "SELECT postal_code, count(1) AS count FROM businesses WHERE postal_code IN (SELECT postal_code FROM businesses GROUP BY postal_code ORDER BY count(postal_code) DESC LIMIT 10) AND owner_name IN (SELECT owner_name FROM businesses GROUP BY owner_name HAVING count(owner_name)>=5) GROUP BY postal_code ORDER BY count DESC
 
 def inspection_scores_in_94103():
     """
@@ -23,7 +22,7 @@ def inspection_scores_in_94103():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT postal_code, count(1) AS count FROM businesses WHERE postal_code IN (SELECT postal_code FROM businesses GROUP BY postal_code ORDER BY count(postal_code) DESC LIMIT 10) AND owner_name IN (SELECT owner_name FROM businesses GROUP BY owner_name HAVING count(owner_name)>=5) GROUP BY postal_code ORDER BY count DESC"
+    return "SELECT risk_category, count(1) AS frequency FROM violations INNER JOIN (SELECT business_id FROM businesses WHERE postal_code = '94103') AS businesses_in_postcode ON violations.business_id = businesses_in_postcode.business_id GROUP BY risk_category ORDER BY frequency DESC"
 
 
 def risk_categories_in_94103():
@@ -34,4 +33,4 @@ def risk_categories_in_94103():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT risk_category, count(1) FROM violations INNER JOIN (SELECT business_id FROM businesses  WHERE postal_code = '94103') AS businesses_in_postcode ON violations.business_id = businesses_in_postcode.business_id GROUP BY risk_category"
+    return "SELECT risk_category, count(1) AS frequency FROM violations INNER JOIN (SELECT business_id FROM businesses  WHERE postal_code = '94103') AS businesses_in_postcode ON violations.business_id = businesses_in_postcode.business_id GROUP BY risk_category ORDER BY frequency DESC"
