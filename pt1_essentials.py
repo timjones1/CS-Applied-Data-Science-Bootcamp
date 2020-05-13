@@ -3,7 +3,8 @@
 
 def business_ids_count():
     """
-    Write a SQL query that finds the number of business ids in the businesses table
+    Write a SQL query that finds the number of business ids in the businesses
+    table
     :return: a string representing the SQL query
     :rtype: str
     """
@@ -12,7 +13,8 @@ def business_ids_count():
 
 def unique_business_names_count():
     """
-    Write a SQL query that finds out how many unique business names are registered
+    Write a SQL query that finds out how many unique business names are
+    registered
     with San Francisco Food health investigation organization
     and name the column as unique restaurant name count.
     :return: a string representing the SQL query
@@ -38,7 +40,9 @@ def business_local_owner_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT Count(1) AS count_same_business_owner_address FROM businesses AS b1 INNER JOIN businesses AS b2 ON b1.business_id = b2.business_id WHERE b1.postal_code = b2.owner_zip"
+    return ("SELECT Count(1) AS count_same_business_owner_address"
+            " FROM businesses AS b1 INNER JOIN businesses AS b2"
+            " ON b1.business_id = b2.business_id WHERE b1.postal_code = b2.owner_zip")
 
 
 def business_local_owner_reg_count():
@@ -47,4 +51,8 @@ def business_local_owner_reg_count():
     :return: a string representing the SQL query
     :rtype: str
     """
-    return "SELECT count(b1.business_certificate) FROM businesses AS b1 INNER JOIN businesses AS b2 ON b1.business_id = b2.business_id WHERE b1.postal_code = b2.owner_zip AND b1.business_certificate IS NOT NULL"
+    return ("SELECT count(b1.business_certificate)"
+            " FROM businesses AS b1"
+            " INNER JOIN businesses AS b2"
+            " ON b1.business_id = b2.business_id"
+            " WHERE b1.postal_code = b2.owner_zip AND b1.business_certificate IS NOT NULL")
