@@ -29,7 +29,10 @@ def get_all_attributes(dataset):
     :type dataset: a Spark RDD
     :return: all unique attributes collected in a list
     """
-    raise NotImplementedError
+
+    d2 = dataset.map(lambda x: (list(x.keys())))
+
+    return d2.reduce(lambda a, b: list(set(a) | set(b)))
 
 
 def get_elements_w_same_attributes(dataset):
