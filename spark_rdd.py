@@ -6,7 +6,7 @@ def count_elements_in_dataset(dataset):
     :type dataset: a Spark RDD
     :return: number of elements in the RDD
     """
-    raise NotImplementedError
+    raise dataset.count()
 
 
 def get_first_element(dataset):
