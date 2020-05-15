@@ -33,7 +33,7 @@ def get_all_attributes(dataset):
 
     dataset_keys = dataset.map(lambda x: (x.keys()))
 
-    return dateset_keys.reduce(lambda a, b: list(set(a) | set(b)))
+    return dataset_keys.reduce(lambda a, b: list(set(a) | set(b)))
 
 
 def get_elements_w_same_attributes(dataset):
@@ -49,7 +49,7 @@ def get_elements_w_same_attributes(dataset):
     first element
     """
     first_element_keys = set(dataset.take(1)[0].keys())
-    dataset.filter(lambda x: set(x.keys()) == first_element_keys)
+    return dataset.filter(lambda x: set(x.keys()) == first_element_keys)
 
 
 def get_min_max_timestamps(dataset):
