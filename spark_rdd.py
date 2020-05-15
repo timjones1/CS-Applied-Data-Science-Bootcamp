@@ -24,20 +24,22 @@ def get_all_attributes(dataset):
     """
     Each element is a dictionary of attributes and their values for a post.
     Can you find the set of all attributes used throughout the RDD?
-    The function dictionary.keys() gives you the list of attributes of a dictionary.
+    The function dictionary.keys() gives you the list of attributes of a 
+    dictionary.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
     :return: all unique attributes collected in a list
     """
 
-    d2 = dataset.map(lambda x: (list(x.keys())))
+    d2 = dataset.map(lambda x: (x.keys()))
 
     return d2.reduce(lambda a, b: list(set(a) | set(b)))
 
 
 def get_elements_w_same_attributes(dataset):
     """
-    We see that there are more attributes than just the one used in the first element.
+    We see that there are more attributes than just the one used in the first
+     element.
     This function should return all elements that have the same attributes
     as the first element.
 
@@ -46,7 +48,8 @@ def get_elements_w_same_attributes(dataset):
     :return: an RDD containing only elements with same attributes as the
     first element
     """
-    raise NotImplementedError
+    first_element_keys = set(dataset.take(1)[0].keys())
+    dataset.filter(lambda x: set(x.keys()) == first_element_keys).count()
 
 
 def get_min_max_timestamps(dataset):
@@ -62,7 +65,8 @@ def get_min_max_timestamps(dataset):
 
 def get_number_of_posts_per_bucket(dataset, min_time, max_time):
     """
-    Using the `get_bucket` function defined in the notebook (redefine it in this file), this function should return a
+    Using the `get_bucket` function defined in the notebook (redefine it in
+     this file), this function should return a
     new RDD that contains the number of elements that fall within each bucket.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
@@ -75,7 +79,8 @@ def get_number_of_posts_per_bucket(dataset, min_time, max_time):
 
 def get_number_of_posts_per_hour(dataset):
     """
-    Using the `get_hour` function defined in the notebook (redefine it in this file), this function should return a
+    Using the `get_hour` function defined in the notebook (redefine it in this
+     file), this function should return a
     new RDD that contains the number of elements per hour.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
@@ -99,7 +104,8 @@ def get_proportion_of_scores(dataset):
     """
     It may be more useful to look at sucessful posts that get over 200 points.
     Find the proportion of posts that get above 200 points per hour.
-    This will be the number of posts with points > 200 divided by the total number of posts at this hour.
+    This will be the number of posts with points > 200 divided by the total
+     number of posts at this hour.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of scores over 200 per hour
