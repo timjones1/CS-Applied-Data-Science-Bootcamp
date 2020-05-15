@@ -31,9 +31,9 @@ def get_all_attributes(dataset):
     :return: all unique attributes collected in a list
     """
 
-    d2 = dataset.map(lambda x: (x.keys()))
+    dataset_keys = dataset.map(lambda x: (x.keys()))
 
-    return d2.reduce(lambda a, b: list(set(a) | set(b)))
+    return dateset_keys.reduce(lambda a, b: list(set(a) | set(b)))
 
 
 def get_elements_w_same_attributes(dataset):
@@ -49,7 +49,7 @@ def get_elements_w_same_attributes(dataset):
     first element
     """
     first_element_keys = set(dataset.take(1)[0].keys())
-    dataset.filter(lambda x: set(x.keys()) == first_element_keys).count()
+    dataset.filter(lambda x: set(x.keys()) == first_element_keys)
 
 
 def get_min_max_timestamps(dataset):
