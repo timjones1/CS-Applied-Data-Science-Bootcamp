@@ -24,7 +24,7 @@ def get_all_attributes(dataset):
     """
     Each element is a dictionary of attributes and their values for a post.
     Can you find the set of all attributes used throughout the RDD?
-    The function dictionary.keys() gives you the list of attributes of a 
+    The function dictionary.keys() gives you the list of attributes of a
     dictionary.
     :param dataset: dataset loaded in Spark context
     :type dataset: a Spark RDD
