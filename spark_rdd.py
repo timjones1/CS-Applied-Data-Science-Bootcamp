@@ -1,3 +1,6 @@
+from datetime import datetime as dt
+
+
 def count_elements_in_dataset(dataset):
     """
     Given a dataset loaded on Spark, return the
@@ -60,7 +63,15 @@ def get_min_max_timestamps(dataset):
     :return: min and max timestamp in a tuple object
     :rtype: tuple
     """
-    raise NotImplementedError
+    def extract_time(timestamp):
+        return dt.utcfromtimestamp(timestamp)
+
+    rdd_ex_time = dataset.map(lambda x: extract_time(x.get('created_at_i')))
+
+    min_time = rdd_ex_time.reduce(lambda a, b: a if a < b else b)
+    max_time = rdd_ex_time.reduce(lambda a, b: a if a > b else b)
+
+    return (min_time, max_time)
 
 
 def get_number_of_posts_per_bucket(dataset, min_time, max_time):
