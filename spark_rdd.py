@@ -85,7 +85,24 @@ def get_number_of_posts_per_bucket(dataset, min_time, max_time):
     :param max_time: Maximum time to consider for buckets (datetime format)
     :return: an RDD with number of elements per bucket
     """
-    raise NotImplementedError
+
+    def get_bucket(rec, min_timestamp, max_timestamp):
+        """
+        funtion provided to get the interval between min and max times
+        """
+        interval = (max_timestamp - min_timestamp + 1) / 200.0
+        bucket_nr = int((rec['created_at_i'] - min_timestamp)/interval)
+
+        return bucket_nr
+
+    min_t, max_t = get_min_max_timestamps(dataset)
+    min_ts = dt.timestamp(min_t)
+    max_ts = dt.timestamp(max_t)
+
+    buckets_rdd = dataset.map(
+        lambda x: (str(get_bucket(x, min_ts, max_ts)), 1))
+    
+    return buckets_rdd
 
 
 def get_number_of_posts_per_hour(dataset):
