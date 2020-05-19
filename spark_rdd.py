@@ -95,13 +95,12 @@ def get_number_of_posts_per_bucket(dataset, min_time, max_time):
 
         return bucket_nr
 
-    min_t, max_t = get_min_max_timestamps(dataset)
-    min_ts = dt.timestamp(min_t)
-    max_ts = dt.timestamp(max_t)
+    min_ts = dt.timestamp(min_time)
+    max_ts = dt.timestamp(max_time)
 
     buckets_rdd = dataset.map(
-        lambda x: (str(get_bucket(x, min_ts, max_ts)), 1))
-    
+        lambda x: (get_bucket(x, min_ts, max_ts), 1))
+
     return buckets_rdd
 
 
