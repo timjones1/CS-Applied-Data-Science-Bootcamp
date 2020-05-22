@@ -103,11 +103,11 @@ def get_number_of_posts_per_bucket(dataset, min_time, max_time):
 
     return buckets_rdd
 
+
 def get_hour(rec):
     """
     Helper function defined by cambridge spark used in multiple other 
     functions
-    
     """
     time = dt.utcfromtimestamp(rec['created_at_i'])
     return time.hour
@@ -139,13 +139,17 @@ def get_score_per_hour(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with average score per hour
     """
-    hours_score_rdd = dataset.map(
+    hour_score_rdd = dataset.map(
         lambda x: (get_hour(x), (x.get("points"), 1)))
+
     score_tot_per_hour = hour_score_rdd.reduceByKey(
         lambda a, b: (a[0] + b[0], a[1] + b[1]))
+
     scores_per_hour_rdd = score_tot_per_hour.mapValues(
         lambda x: x[0] / x[1])
+   
     return scores_per_hour_rdd
+
 
 def get_proportion_of_scores(dataset):
     """
