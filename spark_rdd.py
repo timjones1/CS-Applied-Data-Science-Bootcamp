@@ -225,4 +225,8 @@ def get_title_length_distribution(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the number of submissions per title length
     """
-    raise NotImplementedError
+    title_lengths = dataset.map(lambda x: (get_word_len(x.get("title")),1))
+    
+    submissions_per_length_rdd = title_lengths.reduceByKey(lambda a,b: a+b)
+
+    return submissions_per_length_rdd
