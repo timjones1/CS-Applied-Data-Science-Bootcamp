@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 import re
 
+
 def count_elements_in_dataset(dataset):
     """
     Given a dataset loaded on Spark, return the
@@ -186,7 +187,7 @@ def get_proportion_of_success(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of successful post per title length
     """
-    
+
     def get_word_len(line):
         try:
             res = len(re.compile('\w+').findall(line))
@@ -197,11 +198,11 @@ def get_proportion_of_success(dataset):
 
     words_success_rdd = dataset.map(
         lambda x: (
-            get_word_len(x.get("title")), 
-            (int(x.get("points") > 200),1)
+            get_word_len(x.get("title")),
+            (int(x.get("points") > 200), 1)
         )
     )
-    
+
     success_by_words_rdd = words_success_rdd.reduceByKey(
         lambda a, b: (a[0] + b[0], a[1] + b[1])
     )
