@@ -106,7 +106,7 @@ def get_number_of_posts_per_bucket(dataset, min_time, max_time):
 
 def get_hour(rec):
     """
-    Helper function defined by cambridge spark used in multiple other 
+    Helper function defined by cambridge spark used in multiple other
     functions
     """
     time = dt.utcfromtimestamp(rec['created_at_i'])
@@ -147,7 +147,7 @@ def get_score_per_hour(dataset):
 
     scores_per_hour_rdd = score_tot_per_hour.mapValues(
         lambda x: x[0] / x[1])
-   
+
     return scores_per_hour_rdd
 
 
@@ -161,8 +161,16 @@ def get_proportion_of_scores(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of scores over 200 per hour
     """
-    raise NotImplementedError
-
+    success_posts_rdd = dataset.map(
+        lambda x: (get_hour(x), (int(x.get("points") > 200), 1))
+        )
+    success_posts_per_hour_rdd = success_posts_rdd.reduceByKey(
+        lambda a, b: (a[0] + b[0], a[1] + b[1])
+        )
+    prop_per_hour_rdd = success_posts_per_hour_rdd.mapValues(
+        lambda x: x[0] / x[1]
+        )
+    return prop_per_hour_rdd
 
 def get_proportion_of_success(dataset):
     """
