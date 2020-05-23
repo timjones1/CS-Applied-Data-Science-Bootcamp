@@ -1,5 +1,5 @@
 from datetime import datetime as dt
-
+import re
 
 def count_elements_in_dataset(dataset):
     """
@@ -172,6 +172,7 @@ def get_proportion_of_scores(dataset):
         )
     return prop_per_hour_rdd
 
+
 def get_proportion_of_success(dataset):
     """
     Using the `get_words` function defined in the notebook to count the
@@ -185,7 +186,31 @@ def get_proportion_of_success(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of successful post per title length
     """
-    raise NotImplementedError
+    
+    def get_word_len(line):
+        try:
+            res = len(re.compile('\w+').findall(line))
+        except TypeError:
+            return 0
+        else:
+            return res
+
+    words_success_rdd = dataset.map(
+        lambda x: (
+            get_word_len(x.get("title")), 
+            (int(x.get("points") > 200),1)
+        )
+    )
+    
+    success_by_words_rdd = words_success_rdd.reduceByKey(
+        lambda a, b: (a[0] + b[0], a[1] + b[1])
+    )
+
+    prop_per_title_length_rdd = success_by_words_rdd.mapValues(
+        lambda x: x[0] / x[1]
+    )
+
+    return prop_per_title_length_rdd
 
 
 def get_title_length_distribution(dataset):
