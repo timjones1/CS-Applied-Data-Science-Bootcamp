@@ -174,6 +174,15 @@ def get_proportion_of_scores(dataset):
     return prop_per_hour_rdd
 
 
+def get_word_len(line):
+    try:
+        res = len(re.compile(r'\w+').findall(line))
+    except TypeError:
+        return 0
+    else:
+        return res
+
+
 def get_proportion_of_success(dataset):
     """
     Using the `get_words` function defined in the notebook to count the
@@ -187,14 +196,6 @@ def get_proportion_of_success(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the proportion of successful post per title length
     """
-
-    def get_word_len(line):
-        try:
-            res = len(re.compile('\w+').findall(line))
-        except TypeError:
-            return 0
-        else:
-            return res
 
     words_success_rdd = dataset.map(
         lambda x: (
@@ -225,8 +226,8 @@ def get_title_length_distribution(dataset):
     :type dataset: a Spark RDD
     :return: an RDD with the number of submissions per title length
     """
-    title_lengths = dataset.map(lambda x: (get_word_len(x.get("title")),1))
-    
-    submissions_per_length_rdd = title_lengths.reduceByKey(lambda a,b: a+b)
+    title_lengths = dataset.map(lambda x: (get_word_len(x.get("title")), 1))
+
+    submissions_per_length_rdd = title_lengths.reduceByKey(lambda a, b: a + b)
 
     return submissions_per_length_rdd
