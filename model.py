@@ -12,7 +12,7 @@ def build_model():
     
     cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
     
-    preprocessor = ColumnTransformer(
+    processor = ColumnTransformer(
         [('cat', cat_pipe, cat_cols)],
         remainder='passthrough'
 
@@ -25,4 +25,4 @@ def build_model():
         min_data_in_leaf=100,
         class_weights="balanced")
     
-    return Pipeline([("preprocessor", preprocessor), ("model", lgb_model)])
+    return Pipeline([("processor", processor), ("model", lgb_model)])
