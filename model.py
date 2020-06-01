@@ -24,5 +24,6 @@ def build_model():
                         n_estimators=300,
                         min_data_in_leaf=100,
                         class_weights="balanced")
-                     )
-                    ])
+                      )
+                    ]
+    )
