@@ -25,4 +25,4 @@ def build_model():
         min_data_in_leaf=100,
         class_weights="balanced")
     
-    return Pipeline([("processor", processor), ("model", lgb_model)])
+    return Pipeline([("preprocessor", processor), ("model", lgb_model)])
