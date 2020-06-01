@@ -6,10 +6,9 @@ from sklearn.compose import ColumnTransformer
 
 import lightgbm as lgb
 
-cat_cols = ["Product_Info_2"]
 
 def build_model():
-    
+    cat_cols = ["Product_Info_2"]
     cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
     
     preprocessor = ColumnTransformer(
