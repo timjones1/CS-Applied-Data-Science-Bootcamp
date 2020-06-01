@@ -12,17 +12,17 @@ def build_model():
     
     cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
     
-    processor = ColumnTransformer(
+    preprocessor = ColumnTransformer(
         [('cat', cat_pipe, cat_cols)],
         remainder='passthrough'
-
     )
 
-    lgb_model = lgb.LGBMClassifier(
-        num_leaves=45,
-        learning_rate=0.04,
-        n_estimators=300,
-        min_data_in_leaf=100,
-        class_weights="balanced")
-    
-    return Pipeline([("preprocessor", processor), ("model", lgb_model)])
+    return Pipeline([("preprocessor", preprocessor), 
+                     ("model", lgb.LGBMClassifier(
+                        num_leaves=45,
+                        learning_rate=0.04,
+                        n_estimators=300,
+                        min_data_in_leaf=100,
+                        class_weights="balanced")
+                     )
+                    ])
