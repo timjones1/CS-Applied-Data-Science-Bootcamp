@@ -29,7 +29,7 @@ class Processor(BaseEstimator, TransformerMixin):
         return preprocessor.transform(X), y[:,1]
     
 
-def build_model2():
+def build_model():
     
     return Pipeline([("preprocessor", Processor()), 
         ("model", lgb.LGBMClassifier(
