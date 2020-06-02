@@ -9,31 +9,33 @@ import lightgbm as lgb
 
 class Processor(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
+        
+        cat_cols = ["Product_Info_2"]
+        cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
+    
+        self.preprocessor = ColumnTransformer(
+            [('cat', cat_pipe, cat_cols)],
+            remainder='passthrough')
+        
+        self.preprocessor.fit(X,y)        
+
         return self
 
     def transform(self, X, y=None):
         
         if y is None:
-            return X
+            return self.preprocessor.transform(X)
 
-        return X, y
-
-def build_model():
-    cat_cols = ["Product_Info_2"]
-    cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
+        return preprocessor.transform(X), y[:,1]
     
-    preprocessor = ColumnTransformer(
-        [('cat', cat_pipe, cat_cols)],
-        remainder='passthrough'
-    )
 
-    return Pipeline([("preprocessor", preprocessor), 
-                     ("model", lgb.LGBMClassifier(
-                        num_leaves=45,
-                        learning_rate=0.04,
-                        n_estimators=300,
-                        min_data_in_leaf=100,
-                        class_weights="balanced")
-                      )
-                    ]
-    )
+def build_model2():
+    
+    return Pipeline([("preprocessor", Processor()), 
+        ("model", lgb.LGBMClassifier(
+         num_leaves=45,
+         learning_rate=0.04,
+         n_estimators=300,
+         min_data_in_leaf=100,
+         class_weights="balanced"))
+    ])
