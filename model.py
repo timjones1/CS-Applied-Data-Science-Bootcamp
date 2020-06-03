@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
@@ -8,7 +8,10 @@ import lightgbm as lgb
 
 
 class Processor(BaseEstimator, TransformerMixin):
-    def fit(self, X, y=None):
+    
+	self.preprocessor = None
+	
+	def fit(self, X, y=None):
 
         cat_cols = ["Product_Info_2"]
         cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
@@ -31,11 +34,12 @@ class Processor(BaseEstimator, TransformerMixin):
 
 def build_model():
 
-    return Pipeline([("preprocessor", Processor()),
-        			 ("model", lgb.LGBMClassifier(
-         				num_leaves=45,
-         				learning_rate=0.04,
-         				n_estimators=300,
-         				min_data_in_leaf=100,
-         				class_weights="balanced"))
-    				])
+    return Pipeline([
+		("preprocessor", Processor()),
+        ("model", lgb.LGBMClassifier(
+         	num_leaves=45,
+			learning_rate=0.04,
+			n_estimators=300,
+			min_data_in_leaf=100,
+			class_weights="balanced"))
+    ])
