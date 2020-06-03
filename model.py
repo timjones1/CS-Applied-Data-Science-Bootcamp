@@ -4,7 +4,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
-import lightgbm as lgb
+import xgboost as xgb
 
 
 class Processor(BaseEstimator, TransformerMixin):
@@ -38,10 +38,18 @@ def build_model():
 
     return Pipeline([
         ("preprocessor", Processor()),
-        ("model", lgb.LGBMClassifier(
-            num_leaves=45,
-            learning_rate=0.04,
-            n_estimators=300,
-            min_data_in_leaf=100,
-            class_weights="balanced"))
+        ("model",xgb.XGBClassifier(
+                max_depth=7,
+                learning_rate=0.15,
+                n_estimators = 125,
+                subsample=0.9,
+                colsample_bytree=0.75,
+                min_child_weight=5))
+                
+        # "model", lgb.LGBMClassifier(
+        #     num_leaves=45,
+        #     learning_rate=0.04,
+        #     n_estimators=300,
+        #     min_data_in_leaf=100,
+        #     class_weights="balanced"))
     ])
