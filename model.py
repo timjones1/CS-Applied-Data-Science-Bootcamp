@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
@@ -8,10 +8,11 @@ import lightgbm as lgb
 
 
 class Processor(BaseEstimator, TransformerMixin):
+    
 	
 	def fit(self, X, y=None):
 
-		cat_cols = ["Product_Info_2"]
+        cat_cols = ["Product_Info_2"]
         cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
 
         self.preprocessor = ColumnTransformer(
