@@ -31,7 +31,7 @@ class Processor(BaseEstimator, TransformerMixin):
         if y is None:
             return self.preprocessor.transform(X)
         else:
-            return preprocessor.transform(X), y[:, 1]
+            return self.preprocessor.transform(X), y[:, 1]
 
 
 def build_model():
