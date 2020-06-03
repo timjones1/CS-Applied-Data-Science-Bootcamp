@@ -13,15 +13,15 @@ class Processor(BaseEstimator, TransformerMixin):
 	def fit(self, X, y=None):
 		
 		cat_cols = ["Product_Info_2"]
-		
+
 		cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
 
 		self.preprocessor = ColumnTransformer(
 			[('cat', cat_pipe, cat_cols)],
 			remainder='passthrough')
 
-		self.preprocessor.fit(X, y)   
-
+		self.preprocessor.fit(X, y)
+		
  		return self
 
 	def transform(self, X, y=None):
