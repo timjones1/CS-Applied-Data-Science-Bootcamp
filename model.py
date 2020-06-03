@@ -9,9 +9,9 @@ import lightgbm as lgb
 
 class Processor(BaseEstimator, TransformerMixin):
 
-	
+
 	def fit(self, X, y=None):
-		
+
 		cat_cols = ["Product_Info_2"]
 
 		cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
@@ -21,7 +21,7 @@ class Processor(BaseEstimator, TransformerMixin):
 			remainder='passthrough')
 
 		self.preprocessor.fit(X, y)
-		
+
  		return self
 
 	def transform(self, X, y=None):
