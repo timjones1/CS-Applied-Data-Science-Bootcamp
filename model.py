@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
@@ -9,6 +9,8 @@ import lightgbm as lgb
 
 class Processor(BaseEstimator, TransformerMixin):
 
+    def __init__(self):
+        self.preprocessor = None
 
     def fit(self, X, y=None):
 
@@ -28,8 +30,8 @@ class Processor(BaseEstimator, TransformerMixin):
 
         if y is None:
             return self.preprocessor.transform(X)
-
-        return preprocessor.transform(X), y[:, 1]
+        else:
+            return preprocessor.transform(X), y[:, 1]
 
 
 def build_model():
