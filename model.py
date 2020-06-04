@@ -9,6 +9,8 @@ import xgboost as xgb
 
 class Processor(BaseEstimator, TransformerMixin):
 
+
+
     def __init__(self):
         self.preprocessor = None
 
@@ -35,6 +37,9 @@ class Processor(BaseEstimator, TransformerMixin):
 
 
 def build_model():
+
+    assert xgb.__version__ == '0.91', print(
+        f"xgb version is:{xgb.__version__}")
 
     return Pipeline([
         ("preprocessor", Processor()),
