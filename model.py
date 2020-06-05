@@ -4,12 +4,11 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
-import xgboost as xgb
+# import xgboost as xgb
+import lightgbm as lgb
 
 
 class Processor(BaseEstimator, TransformerMixin):
-
-
 
     def __init__(self):
         self.preprocessor = None
@@ -18,7 +17,8 @@ class Processor(BaseEstimator, TransformerMixin):
 
         cat_cols = ["Product_Info_2"]
 
-        cat_pipe = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
+        cat_pipe = Pipeline([('onehot', OneHotEncoder(
+                handle_unknown='ignore'))])
 
         self.preprocessor = ColumnTransformer(
             [('cat', cat_pipe, cat_cols)],
@@ -38,23 +38,22 @@ class Processor(BaseEstimator, TransformerMixin):
 
 def build_model():
 
-    assert xgb.__version__ == '0.90', print(
-        f"xgb version is:{xgb.__version__}")
+    # assert xgb.__version__ == '0.90', print(
+    #    f"xgb version is:{xgb.__version__}")
 
     return Pipeline([
         ("preprocessor", Processor()),
-        ("model",xgb.XGBClassifier(
-                max_depth=7,
-                learning_rate=0.15,
-                n_estimators = 50,
-                subsample=0.9,
-                colsample_bytree=0.75,
-                min_child_weight=5))
-                
-        # "model", lgb.LGBMClassifier(
-        #     num_leaves=45,
-        #     learning_rate=0.04,
-        #     n_estimators=300,
-        #     min_data_in_leaf=100,
-        #     class_weights="balanced"))
+        ("model", lgb.LGBMClassifier(
+            num_leaves=45,
+            learning_rate=0.04,
+            n_estimators=300,
+            min_data_in_leaf=100))
     ])
+
+# "model",xgb.XGBClassifier(
+#     max_depth=7,
+#     learning_rate=0.15,
+#     n_estimators = 50,
+#     subsample=0.9,
+#     colsample_bytree=0.75,
+#     min_child_weight=5))
