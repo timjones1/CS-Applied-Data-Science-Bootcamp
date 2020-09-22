@@ -1,0 +1,56 @@
+"""
+This exercise contains functions where you need to use pandas to
+apply various data aggregations and transformations.
+"""
+import pandas as pd
+import numpy as np
+
+def get_prices_for_heaviest_item(inventory):
+   
+    true_inventory = inventory.query('in_stock == True')
+    largest_weight = true_inventory.groupby('category')['price'].max()
+    del largest_weight.index.name
+    largest_weight.sort_values(ascending = False, inplace = True)
+    largest_weight.rename(columns = {'price':'0'}, inplace = True)
+    return largest_weight
+    
+
+
+def reshape_temperature_data(measurements):
+
+    df = pd.DataFrame(columns = ['location', 'date', 'value'])
+    df = df.astype({'location': 'float64', 'value': 'float64'})
+
+    for i in range(measurements.shape[0]):
+        for col in measurements.columns:
+            if col != 'location' and  ~np.isnan(measurements.iloc[i, measurements.columns.get_loc(col)]):
+                df = df.append(pd.Series([measurements.iloc[i, 0], col, float(measurements.iloc[i, measurements.columns.get_loc(col)])], index = df.columns), ignore_index= True)
+    df.sort_values(['location', 'value'], ascending = (True, True), inplace = True)
+    df = df.reset_index(drop = True)
+    return df
+
+
+
+def compute_events_matrix_count(events):
+
+    if events.shape[0] == 0:
+        return  pd.Series([])
+    else:
+    
+        df = pd.DataFrame(columns = ['user_id', 'click', 'pause', 'play'])
+        new_columns = np.append(np.array(['user_id']), events.event.unique())
+        df = pd.DataFrame(columns = new_columns)
+        
+        for i in events.user_id.unique():
+            df = df.append(pd.Series(np.append(i, np.zeros(len(events.event.unique()))), index = df.columns), ignore_index= True)
+
+
+        df.sort_values(['user_id'], ascending = (True), inplace = True)
+        df = df.set_index('user_id')
+        
+        for i in range(events.shape[0]):
+            df.loc[events.iloc[i, 0], events.iloc[i, 1]] = df.loc[events.iloc[i, 0], events.iloc[i, 1]] + 1
+
+        df = df.reindex(sorted(df.columns), axis=1)
+
+        return df
