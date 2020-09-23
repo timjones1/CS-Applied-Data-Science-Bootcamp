@@ -1,0 +1,5 @@
+feedback:
+  script:
+  - run_kate . eu.gcr.io/kate-production/ads_06-big_data-v1.0
+  tags:
+  - kate2.0
