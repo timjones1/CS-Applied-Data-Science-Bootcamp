@@ -10,3 +10,12 @@
   6. Optimisation
   7. Testing
   8. Code Quality
+
+### Data Exploration, Supervised Learning and Feature Engineering
+
+  1. EDA with Pandas
+  2. Data Preprocessing
+  3. Linear Regression
+  4. Principal Component Analysis
+ 
+  
