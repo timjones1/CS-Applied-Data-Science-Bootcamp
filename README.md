@@ -9,3 +9,4 @@
   5. Probabilities
   6. Optimisation
   7. Testing
+  8. Code Quality
