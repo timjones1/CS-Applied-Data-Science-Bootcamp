@@ -18,4 +18,16 @@
   3. Linear Regression
   4. Principal Component Analysis
  
-  
+ ### Module ADS03 : Classification, Model Selection & OO Programming
+
+  1. Logistic Regression
+  2. Discriminative Classifiers
+  3. Model Evaluation
+  4. Object Oriented Programming
+
+### Module ADS04 : Time Series and Unsupervised Learning
+
+  1. Dealing with Time
+  2. Time Series
+  3. Auto Regressive Models
+  4. Unsupervised Learning
